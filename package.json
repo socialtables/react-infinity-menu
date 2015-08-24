@@ -1,0 +1,28 @@
+{
+  "name": "@socialtables/menu-drawer-objects-options-subcomponent",
+  "version": "0.0.0",
+  "description": "",
+  "main": "objects-options.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/socialtables/menu-drawer-objects-options-subcomponent.git"
+  },
+  "author": "Social Tables",
+  "bugs": {
+    "url": "https://github.com/socialtables/menu-drawer-objects-options-subcomponent/issues"
+  },
+  "homepage": "https://github.com/socialtables/menu-drawer-objects-options-subcomponent",
+  "dependencies": {
+    "classnames": "^2.1.3",
+    "immutable": "^3.7.4",
+    "uuid": "^2.0.1"
+  },
+  "devDependencies": {
+    "eslint": "^0.23.0",
+    "eslint-loader": "^0.14.0",
+    "eslint-plugin-react": "^2.7.1"
+  }
+}

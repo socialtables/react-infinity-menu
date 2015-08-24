@@ -1,0 +1,44 @@
+{
+	"env": {
+		"browser": true,
+		"es6": true,
+		"node": false
+	},
+	"globals": {
+		"i18n": true,
+		"React": true,
+		"env": true
+	},
+	// 0=off, 1=warning (no fail), 2=error (exit code of 1)
+	"rules": {
+		"brace-style": [2, "stroustrup", { "allowSingleLine": false }],
+		"default-case": 2,
+		"indent": [2, "tab"],
+		"new-cap": 0, // for things like Immutable.Map()
+		"no-catch-shadow": 2,
+		"no-eq-null": 2,
+		"no-floating-decimal": 2,
+		"no-inline-comments": 0,
+		"no-nested-ternary": 2,
+		"no-param-reassign": 0,
+		"no-reserved-keys": 2,
+		"no-self-compare": 2,
+		"no-throw-literal": 2,
+		"no-undefined": 0,
+		"no-void": 2,
+		"quotes": [1, "double"],
+		"space-after-keywords": 2,
+		"wrap-iife": [2, "outside"],
+		"no-underscore-dangle": 0, // Allow leading underscores for method names - REASON: we use underscores to denote private methods
+		"dot-notation": 0
+	},
+	"ecmaFeatures": {
+		"modules": true,
+		"blockBindings": true,
+		"forOf": true,
+		"jsx": true
+	},
+	"plugins": [
+		"react"
+	]
+}
