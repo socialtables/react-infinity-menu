@@ -1,6 +1,6 @@
 {
   "name": "@socialtables/menu-drawer-objects-options-subcomponent",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "objects-options.js",
   "scripts": {
@@ -16,7 +16,7 @@
   },
   "homepage": "https://github.com/socialtables/menu-drawer-objects-options-subcomponent",
   "dependencies": {
-    "@socialtables/venue-mapper-less-assets": "^1.0.0",
+    "@socialtables/css-assets": "latest",
     "classnames": "^2.1.3",
     "immutable": "^3.7.4",
     "uuid": "^2.0.1"
