@@ -144,6 +144,20 @@ export default class ObjectsOptions extends React.Component {
 							config: function(){
 								return getFloorElementConfig("piano");
 							}
+						},
+						{
+							name: "Photo Booth",
+							icon: "st-icon-photo-booth",
+							config: function(){
+								return getFloorElementConfig("photoBooth");
+							}
+						},
+						{
+							name: "DJ/Band",
+							icon: "st-icon-dj-band",
+							config: function(){
+								return getFloorElementConfig("dj");
+							}
 						}
 					]
 				},
@@ -333,6 +347,13 @@ export default class ObjectsOptions extends React.Component {
 							config: function(){
 								return getFloorElementConfig("riser");
 							}
+						},
+						{
+							name: "Standing Mic",
+							icon: "st-icon-mic",
+							config: function(){
+								return getFloorElementConfig("microphone");
+							}
 						}
 					]
 				},
@@ -384,6 +405,13 @@ export default class ObjectsOptions extends React.Component {
 							icon: "st-icon-electric",
 							config: function(){
 								return getFloorElementConfig("electric");
+							}
+						},
+						{
+							name: "Television",
+							icon: "st-icon-tv",
+							config: function(){
+								return getFloorElementConfig("tv");
 							}
 						}
 					]
@@ -444,6 +472,20 @@ export default class ObjectsOptions extends React.Component {
 							config: function(){
 								return getFloorElementConfig("easel");
 							}
+						},
+						{
+							name: "Check-in",
+							icon: "st-icon-checkin",
+							config: function(){
+								return getFloorElementConfig("checkin");
+							}
+						},
+						{
+							name: "Card Table",
+							icon: "st-icon-card-table",
+							config: function(){
+								return getFloorElementConfig("cardTable");
+							}
 						}
 					]
 				},
@@ -474,6 +516,18 @@ export default class ObjectsOptions extends React.Component {
 							icon: "st-icon-circle-trash",
 							config: function() {
 								return getFloorElementConfig("circle-trash-can");
+							}
+						}
+					]
+				},
+				"Staff": {
+					isOpen: false,
+					floorElements: [
+						{
+							name: "Staff",
+							icon: "st-icon-supportstaff",
+							config: function() {
+								return getFloorElementConfig("staff");
 							}
 						}
 					]
