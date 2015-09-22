@@ -413,6 +413,13 @@ export default class ObjectsOptions extends React.Component {
 							config: function(){
 								return getFloorElementConfig("tv");
 							}
+						},
+						{
+							name: "Uplight",
+							icon: "st-icon-uplight",
+							config: function(){
+								return getFloorElementConfig("uplight");
+							}
 						}
 					]
 				},
