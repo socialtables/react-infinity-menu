@@ -29,10 +29,12 @@ export default class ObjectsOptions extends React.Component {
 	 *	@param {string} folder - key name of folder object
 	 */
 	folderClicked(folderName) {
-		const folder = this.state.floorElementsByFolder.get(folderName);
-		const newFolder = folder.set("isOpen", !folder.get("isOpen"));
-		const newFolders = this.state.floorElementsByFolder.set(folderName, newFolder);
-		this.setState({ floorElementsByFolder: newFolders});
+		if(!this.state.search.isSearching || !this.state.search.searchInput.length) {
+			const folder = this.state.floorElementsByFolder.get(folderName);
+			const newFolder = folder.set("isOpen", !folder.get("isOpen"));
+			const newFolders = this.state.floorElementsByFolder.set(folderName, newFolder);
+			this.setState({ floorElementsByFolder: newFolders});
+		}
 	}
 	/*
 	 *	@function onMouseUp
@@ -88,7 +90,8 @@ export default class ObjectsOptions extends React.Component {
 	shouldComponentUpdate(nextProps, nextState) {
 		if (this.state.search.isSearching &&
 			this.state.search.isSearching === nextState.search.isSearching &&
-			this.state.search.searchInput === nextState.search.searchInput) {
+			this.state.search.searchInput === nextState.search.searchInput &&
+			this.state.floorElementsByFolder === nextState.floorElementsByFolder) {
 
 			return false;
 		}
@@ -170,12 +173,14 @@ export default class ObjectsOptions extends React.Component {
 			}
 			else {
 				let chevronFolders = [];
+				const isSearching = this.state.search.isSearching && this.state.search.searchInput.length;
+				const icon = isSearching ? "" : <i className="st-icon st-icon-down"></i>;
 				chevronFolders.push(
 					<div key={key} className="st-vm-objects-options-folder"
 						onClick={this.folderClicked.bind(this, folderName)}>
 
 						<label className="st-vm-objects-options-folder-type">{folderName}</label>
-						<i className="st-icon st-icon-down"></i>
+						{icon}
 					</div>
 				);
 				const floorElementsLIs = folder.get("floorElements").map((fe) => {
