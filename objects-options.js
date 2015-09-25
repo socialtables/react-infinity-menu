@@ -14,13 +14,12 @@ export default class ObjectsOptions extends React.Component {
 	 */
 	constructor(props) {
 		super(props);
-		let getFloorElementConfig = this.props.getFloorElementConfig;
 		this.state = {
 			search: {
 				isSearching: false,
 				searchInput: ""
 			},
-			floorElementsByFolder: floorElementsByFolder.toOrderedMap()
+			floorElementsByFolder: floorElementsByFolder(this.props.getFloorElementConfig)
 		};
 	}
 	/*
@@ -32,7 +31,8 @@ export default class ObjectsOptions extends React.Component {
 	folderClicked(folderName) {
 		const folder = this.state.floorElementsByFolder.get(folderName);
 		const newFolder = folder.set("isOpen", !folder.get("isOpen"));
-		this.setState({ floorElementsByFolder: newFolder});
+		const newFolders = this.state.floorElementsByFolder.set(folderName, newFolder);
+		this.setState({ floorElementsByFolder: newFolders});
 	}
 	/*
 	 *	@function onMouseUp
@@ -69,7 +69,7 @@ export default class ObjectsOptions extends React.Component {
 		event.preventDefault();
 
 		this.props.updateActiveTool("selector");
-		this.props.updateMetadata(Immutable.Map({
+		this.props.updateMetadata(Map({
 			dragX: null,
 			dragY: null,
 			isDragging: false,
