@@ -155,10 +155,10 @@ export default class ObjectsOptions extends React.Component {
 				return folders;
 			}
 		}, OrderedMap());
-		const displayFolders = filteredFolders.map((folder, folderName) => {
+		const displayFolders = filteredFolders.reduce((folders, folder, folderName) => {
 			const key = "object-options-folder-" + uuid.v4();
 			if (!folder.get("isOpen")) {
-				return (
+				folders.push(
 					<div key={key} className="st-vm-objects-options-folder"
 						onClick={this.folderClicked.bind(this, folderName)}>
 
@@ -166,6 +166,7 @@ export default class ObjectsOptions extends React.Component {
 						<i className="st-icon st-icon-right"></i>
 					</div>
 				);
+				return folders;
 			}
 			else {
 				let chevronFolders = [];
@@ -196,9 +197,10 @@ export default class ObjectsOptions extends React.Component {
 						{floorElementsLIs}
 					</ul>
 				);
-				return chevronFolders;
+				folders.push(chevronFolders);
+				return folders;
 			}
-		});
+		}, []);
 		const searchClassNames = classNames({
 			"st-vm-objects-search": true,
 			"collapsed": !this.state.search.isSearching
