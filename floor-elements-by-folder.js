@@ -1,4 +1,4 @@
-import { fromJS } from "immutable";
+import { fromJSOrdered } from "./floor-elements-by-folder"
 
 export default const floorElementsByFolder = fromJS({
 	"Tables & Seating": {
