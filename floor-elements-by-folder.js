@@ -1,4 +1,4 @@
-import fromJSOrdered from "./from-js-ordered-map";
+import fromJSOrdered from "./lib/from-js-ordered-map";
 
 export default function floorElementsByFolder(getFloorElementConfig) {
 	return ( fromJSOrdered({
