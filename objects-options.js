@@ -2,6 +2,7 @@ import "./objects-options.less";
 import floorElementsByFolder from "./floor-elements-by-folder";
 import uuid from "uuid";
 import classNames from "classnames";
+import { Map, OrderedMap, List } from "immutable";
 
 /*
  *  @class ObjectsOptions
@@ -19,7 +20,7 @@ export default class ObjectsOptions extends React.Component {
 				isSearching: false,
 				searchInput: ""
 			},
-			floorElementsByFolder: floorElementsByFolder
+			floorElementsByFolder: floorElementsByFolder.toOrderedMap()
 		};
 	}
 	/*
@@ -29,10 +30,9 @@ export default class ObjectsOptions extends React.Component {
 	 *	@param {string} folder - key name of folder object
 	 */
 	folderClicked(folderName) {
-		let floorElementsByFolder = this.state.floorElementsByFolder.toJS();
-		let folder = floorElementsByFolder[folderName];
-		folder.isOpen = !folder.isOpen;
-		this.setState({ floorElementsByFolder: Immutable.fromJS(floorElementsByFolder) });
+		const folder = this.state.floorElementsByFolder.get(folderName);
+		const newFolder = folder.set("isOpen", !folder.get("isOpen"));
+		this.setState({ floorElementsByFolder: newFolder});
 	}
 	/*
 	 *	@function onMouseUp
@@ -44,16 +44,16 @@ export default class ObjectsOptions extends React.Component {
 	onMouseDown(feClicked, event){
 		event.preventDefault();
 
-		let maxLayer = this.props.getMinFloorElementLayer();
-		let fe = feClicked.config().withMutations((el) => {
+		const maxLayer = this.props.getMinFloorElementLayer();
+		const fe = feClicked.config().withMutations((el) => {
 			el.set("pos_x", 0);
 			el.set("pos_y", 0);
 			el.set("layer", maxLayer + 1);
 		});
-		let newFEs = Immutable.OrderedMap();
+		const newFEs = OrderedMap();
 
 		this.props.updateActiveTool("selector");
-		this.props.updateMetadata(Immutable.Map({
+		this.props.updateMetadata(Map({
 			dragX: 0,
 			dragY: 0,
 			isDragging: true,
@@ -136,122 +136,78 @@ export default class ObjectsOptions extends React.Component {
 	 *  @description React render method for creating objects menu drawer content
 	 */
 	render() {
-		let folderTypes = this.state.floorElementsByFolder.keySeq().toJS();
-		let chevronFolders = [];
-		let filteredFolders = {};
-		let headerContent = [];
+		const floorElementsByFolder = this.state.floorElementsByFolder;
+		const filteredFolders = floorElementsByFolder.reduce((folders, folder, key) => {
+			const searchMatches = folder.get("floorElements").reduce((fes, fe) => {
+				 if(fe.get("name").toLowerCase().includes(this.state.search.searchInput.toLowerCase())) {
+				 	return fes.push(fe);
+				 }
+				 else {
+				 	return fes;
+				 }
+			}, List());
+			if(searchMatches.size) {
+				const isOpen = this.state.search.isSearching && this.state.search.searchInput.length || folder.get("isOpen");
+				const newFolder = folder.withMutations((updatedFolder) => updatedFolder.set("isOpen", isOpen).set("floorElements", searchMatches));
+				const newFolders = folders.set(key, newFolder);
+				return newFolders;
+			}
+			else {
+				return folders;
+			}
+		}, OrderedMap());
+		const displayFolders = filteredFolders.map((folder, folderName) => {
+			const key = "object-options-folder-" + uuid.v4();
+			if (!folder.get("isOpen")) {
+				return (
+					<div key={key} className="st-vm-objects-options-folder"
+						onClick={this.folderClicked.bind(this, folderName)}>
 
-		if (this.state.search.isSearching && this.state.search.searchInput.length) {
-
-			folderTypes.forEach((folderName) => {
-				this.state.floorElementsByFolder.get(folderName).toJS().floorElements.forEach((fe) => {
-					if (fe.name.toLowerCase().includes(this.state.search.searchInput.toLowerCase())) {
-						if (!filteredFolders.folderName) {
-							filteredFolders[folderName] = {
-								isOpen: true,
-								floorElements: [
-									fe
-								]
-							};
-						}
-						else {
-							filteredFolders.folderName.floorElements.push(fe);
-						}
-					}
-				});
-			});
-
-			let filteredFolderKeys = Object.keys(filteredFolders);
-
-			filteredFolderKeys.forEach((folderName) => {
-				let key = "object-options-folder-" + uuid.v4();
-
+						<label className="st-vm-objects-options-folder-type">{folderName}</label>
+						<i className="st-icon st-icon-right"></i>
+					</div>
+				);
+			}
+			else {
+				let chevronFolders = [];
 				chevronFolders.push(
 					<div key={key} className="st-vm-objects-options-folder"
 						onClick={this.folderClicked.bind(this, folderName)}>
 
 						<label className="st-vm-objects-options-folder-type">{folderName}</label>
+						<i className="st-icon st-icon-down"></i>
 					</div>
 				);
 
 				let floorElementsLIs = [];
-				filteredFolders[folderName].floorElements.forEach((fe) => {
-					key = "objects-options-item-" + uuid.v4();
+				const floorElementLIs = folder.get("floorElements").map((fe) => {
+					const itemKey = "objects-folder-item-" + uuid.v4();
 
-					floorElementsLIs.push(
-						<li key={key} className="st-vm-objects-options-folder-item"
+					return (
+						<li key={itemKey} className="st-vm-objects-options-folder-item"
 							onMouseDown={this.onMouseDown.bind(this, fe)}
 							onMouseUp={this.onMouseUp.bind(this)}>
 
-							<span className="st-vm-objects-options-folder-item-name">{fe.name}</span>
-							<i className={"st-vm-floor-element-icon " + fe.icon}></i>
+							<span className="st-vm-objects-options-folder-item-name">{fe.get("name")}</span>
+							<i className={"st-vm-floor-element-icon " + fe.get("icon")}></i>
 						</li>
 					);
 				});
 				chevronFolders.push(
 					<ul key={"objects-folder-list-" + uuid.v4()}
 						className="st-vm-objects-options-folder-list">
-
 						{floorElementsLIs}
 					</ul>
 				);
-			});
-		}
-		else {
-			folderTypes.forEach((folderName) => {
-				let key = "object-options-folder-" + uuid.v4();
-				let folder = this.state.floorElementsByFolder.get(folderName).toJS();
-
-				if (!folder.isOpen) {
-					chevronFolders.push(
-						<div key={key} className="st-vm-objects-options-folder"
-							onClick={this.folderClicked.bind(this, folderName)}>
-
-							<label className="st-vm-objects-options-folder-type">{folderName}</label>
-							<i className="st-icon st-icon-right"></i>
-						</div>
-					);
-				}
-				else {
-					chevronFolders.push(
-						<div key={key} className="st-vm-objects-options-folder"
-							onClick={this.folderClicked.bind(this, folderName)}>
-
-							<label className="st-vm-objects-options-folder-type">{folderName}</label>
-							<i className="st-icon st-icon-down"></i>
-						</div>
-					);
-
-					let floorElementsLIs = [];
-					folder.floorElements.forEach((fe) => {
-						key = "objects-folder-item-" + uuid.v4();
-
-						floorElementsLIs.push(
-							<li key={key} className="st-vm-objects-options-folder-item"
-								onMouseDown={this.onMouseDown.bind(this, fe)}
-								onMouseUp={this.onMouseUp.bind(this)}>
-
-								<span className="st-vm-objects-options-folder-item-name">{fe.name}</span>
-								<i className={"st-vm-floor-element-icon " + fe.icon}></i>
-							</li>
-						);
-					});
-					chevronFolders.push(
-						<ul key={"objects-folder-list-" + uuid.v4()}
-							className="st-vm-objects-options-folder-list">
-
-							{floorElementsLIs}
-						</ul>
-					);
-				}
-			});
-		}
-
+				return chevronFolders;
+			}
+		});
+		const searchClassNames = classNames({
+			"st-vm-objects-search": true,
+			"collapsed": !this.state.search.isSearching
+		});
+		let headerContent;
 		if (this.state.search.isSearching) {
-			let searchClassNames = classNames({
-				"st-vm-objects-search": true,
-				"collapsed": false
-			});
 			headerContent =
 				<div className="st-vm-objects-options-header">
 					<div className={searchClassNames}>
@@ -265,10 +221,6 @@ export default class ObjectsOptions extends React.Component {
 				</div>;
 		}
 		else {
-			let searchClassNames = classNames({
-				"st-vm-objects-search": true,
-				"collapsed": true
-			});
 			headerContent =
 				<div className="st-vm-objects-options-header">
 					<i className="st-vm-objects-icon st-icon-arrow-left"
@@ -284,7 +236,7 @@ export default class ObjectsOptions extends React.Component {
 		return (
 			<div key="st-vm-objects-options" className="st-vm-objects-options">
 				{headerContent}
-				{chevronFolders}
+				{displayFolders}
 			</div>
 		);
 	}

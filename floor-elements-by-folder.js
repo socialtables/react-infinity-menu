@@ -1,6 +1,6 @@
-import { Map } from "immutable";
+import { fromJS } from "immutable";
 
-export default const floorElementsByFolder = Map({
+export default const floorElementsByFolder = fromJS({
 	"Tables & Seating": {
 		isOpen: false,
 		floorElements: [
