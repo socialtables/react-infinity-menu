@@ -43,7 +43,6 @@ export default class ObjectsOptions extends React.Component {
 	 */
 	onMouseDown(feClicked, event){
 		event.preventDefault();
-
 		const maxLayer = this.props.getMinFloorElementLayer();
 		const fe = feClicked.config().withMutations((el) => {
 			el.set("pos_x", 0);
@@ -178,9 +177,7 @@ export default class ObjectsOptions extends React.Component {
 						<i className="st-icon st-icon-down"></i>
 					</div>
 				);
-
-				let floorElementsLIs = [];
-				const floorElementLIs = folder.get("floorElements").map((fe) => {
+				const floorElementsLIs = folder.get("floorElements").map((fe) => {
 					const itemKey = "objects-folder-item-" + uuid.v4();
 
 					return (
