@@ -4,7 +4,7 @@ export default function floorElementsByFolder(getFloorElementConfig, floorElemen
 	const feByFloders = Object.keys(floorElementUIConfig).reduce((pre, curr) => {
 		const fe = floorElementUIConfig[curr];
 		const category = fe.category;
-		if (category === "DONT_SHOW_IN_MENU") {
+		if (category === "DONT_SHOW_IN_MENU" || !fe.name || !fe.icon) {
 			return pre;
 		}
 
