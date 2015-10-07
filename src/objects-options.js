@@ -19,7 +19,7 @@ export default class ObjectsOptions extends React.Component {
 				isSearching: false,
 				searchInput: ""
 			},
-			floorElementsByFolder: FloorElementsByFolder(this.props.getFloorElementConfig)
+			floorElementsByFolder: FloorElementsByFolder(this.props.getFloorElementConfig, this.props.floorElementUIConfig)
 		};
 	}
 	/*
