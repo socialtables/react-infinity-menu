@@ -1,8 +1,8 @@
-import "./objects-options.less";
-import floorElementsByFolder from "./floor-elements-by-folder";
+import FloorElementsByFolder from "./floor-elements-by-folder";
 import uuid from "uuid";
 import classNames from "classnames";
 import { Map, OrderedMap, List } from "immutable";
+import React from "react";
 
 /*
  *  @class ObjectsOptions
@@ -19,7 +19,7 @@ export default class ObjectsOptions extends React.Component {
 				isSearching: false,
 				searchInput: ""
 			},
-			floorElementsByFolder: floorElementsByFolder(this.props.getFloorElementConfig)
+			floorElementsByFolder: FloorElementsByFolder(this.props.getFloorElementConfig, this.props.floorElementUIConfig)
 		};
 	}
 	/*
@@ -29,7 +29,7 @@ export default class ObjectsOptions extends React.Component {
 	 *	@param {string} folder - key name of folder object
 	 */
 	folderClicked(folderName) {
-		if(!this.state.search.isSearching || !this.state.search.searchInput.length) {
+		if (!this.state.search.isSearching || !this.state.search.searchInput.length) {
 			const folder = this.state.floorElementsByFolder.get(folderName);
 			const newFolder = folder.set("isOpen", !folder.get("isOpen"));
 			const newFolders = this.state.floorElementsByFolder.set(folderName, newFolder);
@@ -141,14 +141,14 @@ export default class ObjectsOptions extends React.Component {
 		const floorElementsByFolder = this.state.floorElementsByFolder;
 		const filteredFolders = floorElementsByFolder.reduce((folders, folder, key) => {
 			const searchMatches = folder.get("floorElements").reduce((fes, fe) => {
-				 if(fe.get("name").toLowerCase().includes(this.state.search.searchInput.toLowerCase())) {
-				 	return fes.push(fe);
-				 }
-				 else {
-				 	return fes;
-				 }
+				if (fe.get("name").toLowerCase().includes(this.state.search.searchInput.toLowerCase())) {
+					return fes.push(fe);
+				}
+				else {
+					return fes;
+				}
 			}, List());
-			if(searchMatches.size) {
+			if (searchMatches.size) {
 				const isOpen = this.state.search.isSearching && this.state.search.searchInput.length || folder.get("isOpen");
 				const newFolder = folder.withMutations((updatedFolder) => updatedFolder.set("isOpen", isOpen).set("floorElements", searchMatches));
 				const newFolders = folders.set(key, newFolder);
