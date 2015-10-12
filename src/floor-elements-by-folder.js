@@ -1,10 +1,14 @@
 import fromJSOrdered from "./lib/from-js-ordered-map";
 
 export default function floorElementsByFolder(getFloorElementConfig, floorElementUIConfig) {
+	if (!floorElementUIConfig) {
+		return [];
+	}
+
 	const feByFloders = Object.keys(floorElementUIConfig).reduce((pre, curr) => {
 		const fe = floorElementUIConfig[curr];
 		const category = fe.category;
-		if (category === "DONT_SHOW_IN_MENU" || !fe.name || !fe.icon) {
+		if (category === "DONT_SHOW_IN_MENU" || !fe.name) {
 			return pre;
 		}
 

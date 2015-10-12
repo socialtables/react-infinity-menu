@@ -88,6 +88,13 @@ export default class ObjectsOptions extends React.Component {
 	 *	@returns {boolean} true if something changed based on user interaction
 	 */
 	shouldComponentUpdate(nextProps, nextState) {
+		if (this.props.getFloorElementConfig !== nextProps.getFloorElementConfig || this.props.floorElementUIConfig !== nextProps.floorElementUIConfig) {
+			this.setState({
+				floorElementsByFolder: FloorElementsByFolder(nextProps.getFloorElementConfig, nextProps.floorElementUIConfig)
+			});
+			return true;
+		}
+
 		if (this.state.search.isSearching &&
 			this.state.search.isSearching === nextState.search.isSearching &&
 			this.state.search.searchInput === nextState.search.searchInput &&
@@ -158,6 +165,7 @@ export default class ObjectsOptions extends React.Component {
 				return folders;
 			}
 		}, OrderedMap());
+
 		const displayFolders = filteredFolders.reduce((folders, folder, folderName) => {
 			const key = "object-options-folder-" + uuid.v4();
 			if (!folder.get("isOpen")) {
@@ -185,11 +193,10 @@ export default class ObjectsOptions extends React.Component {
 				);
 				const floorElementsLIs = folder.get("floorElements").map((fe) => {
 					const itemKey = "objects-folder-item-" + uuid.v4();
-
 					return (
 						<li key={itemKey} className="st-vm-objects-options-folder-item"
-							onMouseDown={this.onMouseDown.bind(this, fe)}
-							onMouseUp={this.onMouseUp.bind(this)}>
+							onMouseDown={(e) => this.props.onCategoryTypeMouseDown(e, fe)}
+							onMouseUp={(e) => this.props.onCategoryTypeMouseUp(e, fe)}>
 
 							<span className="st-vm-objects-options-folder-item-name">{fe.get("name")}</span>
 							<i className={"st-vm-floor-element-icon " + fe.get("icon")}></i>
