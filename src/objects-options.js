@@ -28,56 +28,18 @@ export default class ObjectsOptions extends React.Component {
 	 *
 	 *	@param {string} folder - key name of folder object
 	 */
-	folderClicked(folderName) {
+	folderClicked(folderName, event) {
+		event.preventDefault();
 		if (!this.state.search.isSearching || !this.state.search.searchInput.length) {
 			const folder = this.state.floorElementsByFolder.get(folderName);
 			const newFolder = folder.set("isOpen", !folder.get("isOpen"));
 			const newFolders = this.state.floorElementsByFolder.set(folderName, newFolder);
 			this.setState({ floorElementsByFolder: newFolders});
+			if (this.props.onCategoryClick) {
+				this.props.onCategoryClick(newFolder);
+			}
 		}
 	}
-	/*
-	 *	@function onMouseUp
-	 *	@description when fe from list is clicked
-	 *
-	 *	@param {object} feClicked - reference to the fe object
-	 *	@param {object} event - React Synthetic Event
-	 */
-	onMouseDown(feClicked, event){
-		event.preventDefault();
-		const maxLayer = this.props.getMinFloorElementLayer();
-		const fe = feClicked.get("config")().withMutations((el) => {
-			el.set("pos_x", 0);
-			el.set("pos_y", 0);
-			el.set("layer", maxLayer + 1);
-		});
-		const newFEs = OrderedMap();
-
-		this.props.updateActiveTool("selector");
-		this.props.updateMetadata(Map({
-			dragX: 0,
-			dragY: 0,
-			isDragging: true,
-			floorElementTypeMenu: newFEs.set(uuid.v4(), fe)
-		}));
-	}
-	/*
-	 *	@function onMouseUp
-	 *	@description when fe from list is dragged and the mouse click is released
-	 *
-	 *	@param {object} event - React Synthetic Event
-	 */
-	onMouseUp(event) {
-		event.preventDefault();
-
-		this.props.updateActiveTool("selector");
-		this.props.updateMetadata(Map({
-			dragX: null,
-			dragY: null,
-			isDragging: false,
-			floorElementTypeMenu: null
-		}));
-	};
 	/*
 	 *	@function shouldComponentUpdate
 	 *	@description check for edge cases with filtering that can cause loops
@@ -90,7 +52,7 @@ export default class ObjectsOptions extends React.Component {
 	shouldComponentUpdate(nextProps, nextState) {
 		if (this.props.getFloorElementConfig !== nextProps.getFloorElementConfig || this.props.floorElementUIConfig !== nextProps.floorElementUIConfig) {
 			this.setState({
-				floorElementsByFolder: FloorElementsByFolder(nextProps.getFloorElementConfig, nextProps.floorElementUIConfig)
+				floorElementsByFolder: FloorElementsByFolder(nextProps.getFloorElementConfig, nextProps.floorElementUIConfig, nextState.floorElementsByFolder)
 			});
 			return true;
 		}
@@ -162,7 +124,9 @@ export default class ObjectsOptions extends React.Component {
 				return newFolders;
 			}
 			else {
-				return folders;
+				const isOpen = this.state.search.isSearching && this.state.search.searchInput.length || folder.get("isOpen");
+				folder = folder.set("isOpen", isOpen);
+				return folders.set(key, folder);
 			}
 		}, OrderedMap());
 
@@ -195,8 +159,10 @@ export default class ObjectsOptions extends React.Component {
 					const itemKey = "objects-folder-item-" + uuid.v4();
 					return (
 						<li key={itemKey} className="st-vm-objects-options-folder-item"
-							onMouseDown={(e) => this.props.onCategoryTypeMouseDown(e, fe)}
-							onMouseUp={(e) => this.props.onCategoryTypeMouseUp(e, fe)}>
+							onMouseDown={(e) => this.props.onCategoryTypeMouseDown ? this.props.onCategoryTypeMouseDown(e, fe) : null}
+							onMouseUp={(e) => this.props.onCategoryTypeMouseUp ? this.props.onCategoryTypeMouseUp(e, fe) : null}
+							onClick={(e) => this.props.onCategoryTypeClick ? this.props.onCategoryTypeClick(e, fe) : null}
+							>
 
 							<span className="st-vm-objects-options-folder-item-name">{fe.get("name")}</span>
 							<i className={"st-vm-floor-element-icon " + fe.get("icon")}></i>
