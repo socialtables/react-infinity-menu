@@ -32,9 +32,11 @@ export default function legacyDataImport(getFloorElementConfig, floorElementUICo
 		/*Inital category*/
 		if (pre[catalog].children[category] === undefined) {
 			let isOpen = false;
-			const nextCategory = nextFolderTree.getIn([catalog, "children", category]);
-			if (nextFolderTree && nextCategory) {
-				isOpen = nextCategory.get("isOpen");
+			if (nextFolderTree) {
+				const nextCategory = nextFolderTree.getIn([catalog, "children", category]);
+				if (nextCategory) {
+					isOpen = nextCategory.get("isOpen");
+				}
 			}
 			pre[catalog].children[category] = {
 				children: {},
