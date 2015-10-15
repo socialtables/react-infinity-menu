@@ -231,7 +231,7 @@ export default class ObjectsOptions extends React.Component {
 			headerContent =
 				<div className="st-vm-objects-options-header">
 					<i className="st-vm-objects-icon st-icon-arrow-left"
-						onClick={this.props.close}></i>
+						onClick={this.props.onClose}></i>
 					<label>Objects</label>
 					<div className={searchClassNames}>
 						<i className="st-vm-objects-icon st-icon-search"
@@ -248,3 +248,21 @@ export default class ObjectsOptions extends React.Component {
 		);
 	}
 }
+
+ObjectsOptions.propTypes = {
+	tree: React.PropType.array,
+	onNodeMouseClick: React.PropType.func,
+	onLeafMouseClick: React.PropType.func,
+	onLeafMouseDown: React.PropType.func,
+	onLeafMouseUp: React.PropType.func,
+	onClose: React.PropType.func
+};
+
+ObjectsOptions.defaultProps = {
+	tree: [],
+	onNodeMouseClick: ()=>{},
+	onLeafMouseClick: ()=>{},
+	onLeafMouseDown: ()=>{},
+	onLeafMouseUp: ()=>{},
+	onClose: ()=>{}
+};
