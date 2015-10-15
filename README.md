@@ -23,12 +23,14 @@ class Example extends React.Component {
 		console.log( leaf.name ); // Prints the leaf name
 	}
 
-	onLeafMouseUp(event) {
-
+	onLeafMouseUp(event, leaf) {
+		console.log( leaf.id ); // Prints the leaf id
+		console.log( leaf.name ); // Prints the leaf name
 	}
 
-	onLeafMouseDown(event) {
-
+	onLeafMouseDown(event, leaf) {
+		console.log( leaf.id ); // Prints the leaf id
+		console.log( leaf.name ); // Prints the leaf name
 	}
 
 	render() {
