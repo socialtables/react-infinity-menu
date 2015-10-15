@@ -17,8 +17,7 @@ export default class ObjectsOptions extends React.Component {
 			search: {
 				isSearching: false,
 				searchInput: ""
-			},
-			folderTree: fromJS(this.props.tree)
+			}
 		};
 	}
 	/*
@@ -27,12 +26,11 @@ export default class ObjectsOptions extends React.Component {
 	 *
 	 *	@param {string} folder - key name of folder object
 	 */
-	onFolderClicked(folder, keyPath, event) {
+	onFolderClicked(folderTree, folder, keyPath, event) {
 		event.preventDefault();
 		if (!this.state.search.isSearching || !this.state.search.searchInput.length) {
 			const newFolder = folder.set("isOpen", !folder.get("isOpen"));
-			const newFolders = this.state.folderTree.setIn(keyPath, newFolder);
-			this.setState({ folderTree: newFolders});
+			const newFolders = folderTree.setIn(keyPath, newFolder);
 			if (this.props.onNodeMouseClick) {
 				const currLevel = Math.floor(keyPath.length / 2);
 				this.props.onNodeMouseClick(newFolders.toJS(), newFolder.toJS(), currLevel);
@@ -50,16 +48,12 @@ export default class ObjectsOptions extends React.Component {
 	 */
 	shouldComponentUpdate(nextProps, nextState) {
 		if (this.props.tree !== nextProps.tree) {
-			this.setState({
-				folderTree: fromJS(nextProps.tree)
-			});
 			return true;
 		}
 
 		if (this.state.search.isSearching &&
 			this.state.search.isSearching === nextState.search.isSearching &&
-			this.state.search.searchInput === nextState.search.searchInput &&
-			this.state.folderTree === nextState.folderTree) {
+			this.state.search.searchInput === nextState.search.searchInput) {
 			return false;
 		}
 		return true;
@@ -123,7 +117,7 @@ export default class ObjectsOptions extends React.Component {
 		}
 	}
 
-	setDisplayFolders(prevs, curr, keyPath) {
+	setDisplayFolders(folderTree, prevs, curr, keyPath) {
 		/*the leaves*/
 		if (!curr.get("children")) {
 			const itemKey = "objects-folder-folder-" + uuid.v4();
@@ -146,7 +140,7 @@ export default class ObjectsOptions extends React.Component {
 			if (!curr.get("isOpen")) {
 				prevs.push(
 					<div key={key} className="st-vm-objects-options-folder"
-						onClick={this.onFolderClicked.bind(this, curr, keyPath)}>
+						onClick={this.onFolderClicked.bind(this, folderTree, curr, keyPath)}>
 						<label className="st-vm-objects-options-folder-type">{folderName}</label>
 						<i className="st-icon st-icon-right"></i>
 					</div>
@@ -163,7 +157,7 @@ export default class ObjectsOptions extends React.Component {
 				if (!isDefault) {
 					openedFolder.push(
 						<div key={key} className="st-vm-objects-options-folder"
-							onClick={this.onFolderClicked.bind(this, curr, keyPath)}>
+							onClick={this.onFolderClicked.bind(this, folderTree, curr, keyPath)}>
 							<label className="st-vm-objects-options-folder-type">{folderName}</label>
 							{icon}
 						</div>
@@ -175,7 +169,7 @@ export default class ObjectsOptions extends React.Component {
 						return p;
 					}
 					const newKeyPath = [].concat(keyPath).concat(["children", k]);
-					return this.setDisplayFolders(p, c, newKeyPath);
+					return this.setDisplayFolders(folderTree, p, c, newKeyPath);
 				}, []) : [];
 
 				if (floorElementsLIs.length > 0) {
@@ -196,7 +190,7 @@ export default class ObjectsOptions extends React.Component {
 	 *  @description React render method for creating objects menu drawer content
 	 */
 	render() {
-		const folderTree = this.state.folderTree;
+		const folderTree = fromJS(this.props.tree);
 		/*find filtered folders base on search, if there no search, return all*/
 		const filteredFolders = this.state.search.isSearching && this.state.search.searchInput.length ? folderTree.reduce((folders, folder, key) => {
 			if (key === undefined) {
@@ -210,7 +204,7 @@ export default class ObjectsOptions extends React.Component {
 			if (key === undefined) {
 				return folders;
 			}
-			return this.setDisplayFolders(folders, folder, [key]);
+			return this.setDisplayFolders(folderTree, folders, folder, [key]);
 		}, []);
 
 		const searchClassNames = classNames({
