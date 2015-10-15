@@ -1,8 +1,6 @@
-//import legacyDataImport from "./floor-elements-by-folder";
-import legacyDataImport from "./legacy-data-import";
 import uuid from "uuid";
 import classNames from "classnames";
-import { OrderedMap } from "immutable";
+import { OrderedMap, fromJS } from "immutable";
 import React from "react";
 
 /*
@@ -20,7 +18,7 @@ export default class ObjectsOptions extends React.Component {
 				isSearching: false,
 				searchInput: ""
 			},
-			folderTree: legacyDataImport(this.props.getFloorElementConfig, this.props.floorElementUIConfig)
+			folderTree: fromJS(this.props.tree)
 		};
 	}
 	/*
@@ -37,7 +35,7 @@ export default class ObjectsOptions extends React.Component {
 			this.setState({ folderTree: newFolders});
 			if (this.props.onNodeMouseClick) {
 				const currLevel = Math.floor(keyPath.length / 2);
-				this.props.onNodeMouseClick(newFolder, currLevel);
+				this.props.onNodeMouseClick(newFolders.toJS(), newFolder.toJS(), currLevel);
 			}
 		}
 	}
@@ -51,9 +49,9 @@ export default class ObjectsOptions extends React.Component {
 	 *	@returns {boolean} true if something changed based on user interaction
 	 */
 	shouldComponentUpdate(nextProps, nextState) {
-		if (this.props.getFloorElementConfig !== nextProps.getFloorElementConfig || this.props.floorElementUIConfig !== nextProps.floorElementUIConfig) {
+		if (this.props.tree !== nextProps.tree) {
 			this.setState({
-				folderTree: legacyDataImport(nextProps.getFloorElementConfig, nextProps.floorElementUIConfig, nextState.folderTree)
+				folderTree: fromJS(nextProps.tree)
 			});
 			return true;
 		}
@@ -173,6 +171,9 @@ export default class ObjectsOptions extends React.Component {
 				}
 
 				const floorElementsLIs = curr.get("children").size ? curr.get("children").reduce((p, c, k) => {
+					if (c === undefined || k === undefined) {
+						return p;
+					}
 					const newKeyPath = [].concat(keyPath).concat(["children", k]);
 					return this.setDisplayFolders(p, c, newKeyPath);
 				}, []) : [];
@@ -196,13 +197,19 @@ export default class ObjectsOptions extends React.Component {
 	 */
 	render() {
 		const folderTree = this.state.folderTree;
-
 		/*find filtered folders base on search, if there no search, return all*/
 		const filteredFolders = this.state.search.isSearching && this.state.search.searchInput.length ? folderTree.reduce((folders, folder, key) => {
+			if (key === undefined) {
+				return folders;
+			}
 			return this.findFilted(folders, folder, key);
 		}, OrderedMap()) : folderTree;
 
+
 		const displayFolders = filteredFolders.reduce((folders, folder, key) => {
+			if (key === undefined) {
+				return folders;
+			}
 			return this.setDisplayFolders(folders, folder, [key]);
 		}, []);
 
