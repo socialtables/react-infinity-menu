@@ -33,7 +33,7 @@ export default class ObjectsOptions extends React.Component {
 			const newFolders = folderTree.setIn(keyPath, newFolder);
 			if (this.props.onNodeMouseClick) {
 				const currLevel = Math.floor(keyPath.length / 2);
-				this.props.onNodeMouseClick(newFolders.toJS(), newFolder.toJS(), currLevel);
+				this.props.onNodeMouseClick(event, newFolders.toJS(), newFolder.toJS(), currLevel);
 			}
 		}
 	}
