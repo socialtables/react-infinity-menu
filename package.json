@@ -4,7 +4,7 @@
   "description": "",
   "main": "./dist/objects-options.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha",
     "build": "babel src -d dist",
     "watch": "babel src --watch -d dist",
     "prepublish": "npm run build"
@@ -29,6 +29,7 @@
     "babel-core": "^5.8.25",
     "eslint": "^0.23.0",
     "eslint-loader": "^0.14.0",
-    "eslint-plugin-react": "^2.7.1"
+    "eslint-plugin-react": "^2.7.1",
+    "mocha": "^2.3.3"
   }
 }
