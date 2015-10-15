@@ -1,4 +1,3 @@
-import uuid from "uuid";
 import classNames from "classnames";
 import { OrderedMap, fromJS } from "immutable";
 import React from "react";
@@ -118,9 +117,10 @@ export default class ObjectsOptions extends React.Component {
 	}
 
 	setDisplayFolders(folderTree, prevs, curr, keyPath) {
+		const currLevel = Math.floor(keyPath / 2);
 		/*the leaves*/
 		if (!curr.get("children")) {
-			const itemKey = "objects-folder-folder-" + uuid.v4();
+			const itemKey = "objects-options-leaf-" + curr.get("id");
 			prevs.push(
 				<li key={itemKey} className="st-vm-objects-options-folder-item"
 					onMouseDown={(e) => this.props.onLeafMouseDown ? this.props.onLeafMouseDown(e, curr) : null}
@@ -135,7 +135,7 @@ export default class ObjectsOptions extends React.Component {
 		}
 		/*the node*/
 		else {
-			const key = "object-options-folder-" + uuid.v4();
+			const key = "object-options-node-" + currLevel + "-" + curr.get("id");
 			const folderName = curr.get("name");
 			if (!curr.get("isOpen")) {
 				prevs.push(
@@ -174,7 +174,7 @@ export default class ObjectsOptions extends React.Component {
 
 				if (floorElementsLIs.length > 0) {
 					openedFolder.push(
-						<ul key={"objects-folder-list-" + uuid.v4()}
+						<ul key={"objects-folder-list" + currLevel}
 							className="st-vm-objects-options-folder-list">
 							{floorElementsLIs}
 						</ul>
@@ -250,12 +250,12 @@ export default class ObjectsOptions extends React.Component {
 }
 
 ObjectsOptions.propTypes = {
-	tree: React.PropType.array,
-	onNodeMouseClick: React.PropType.func,
-	onLeafMouseClick: React.PropType.func,
-	onLeafMouseDown: React.PropType.func,
-	onLeafMouseUp: React.PropType.func,
-	onClose: React.PropType.func
+	tree: React.PropTypes.array,
+	onNodeMouseClick: React.PropTypes.func,
+	onLeafMouseClick: React.PropTypes.func,
+	onLeafMouseDown: React.PropTypes.func,
+	onLeafMouseUp: React.PropTypes.func,
+	onClose: React.PropTypes.func
 };
 
 ObjectsOptions.defaultProps = {
