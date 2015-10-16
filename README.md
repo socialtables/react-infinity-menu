@@ -1,5 +1,7 @@
 # menu-drawer-objects-options-subcomponent
 
+[![Circle CI](https://circleci.com/gh/socialtables/menu-drawer-objects-options-subcomponent/tree/master.svg?style=svg&circle-token=230aaa396d006f1dc8d875b340834234c4937bbc)](https://circleci.com/gh/socialtables/menu-drawer-objects-options-subcomponent/tree/master)
+
 * An unlimited deep side menu
 
 # Installation
