@@ -180,6 +180,7 @@ var ObjectsOptions = (function (_React$Component) {
 					prevs.push(_react2["default"].createElement(
 						"li",
 						{ key: itemKey,
+							className: "infinity-menu-leaf-container",
 							onMouseDown: function (e) {
 								return _this2.props.onLeafMouseDown ? _this2.props.onLeafMouseDown(e, curr) : null;
 							},
@@ -217,7 +218,9 @@ var ObjectsOptions = (function (_React$Component) {
 							prevs.push(_react2["default"].createElement(
 								"div",
 								{ key: key,
-									onClick: this.onFolderClicked.bind(this, folderTree, curr, keyPath) },
+									onClick: this.onFolderClicked.bind(this, folderTree, curr, keyPath),
+									className: "infinity-menu-node-container"
+								},
 								_react2["default"].createElement(
 									"label",
 									null,
@@ -247,7 +250,9 @@ var ObjectsOptions = (function (_React$Component) {
 								openedFolder.push(_react2["default"].createElement(
 									"div",
 									{ key: key,
-										onClick: this.onFolderClicked.bind(this, folderTree, curr, keyPath) },
+										onClick: this.onFolderClicked.bind(this, folderTree, curr, keyPath),
+										className: "infinity-menu-node-container"
+									},
 									_react2["default"].createElement(
 										"label",
 										null,
@@ -316,7 +321,7 @@ var ObjectsOptions = (function (_React$Component) {
 
 			return _react2["default"].createElement(
 				"div",
-				null,
+				{ className: "infinity-menu-container" },
 				headerContent,
 				displayFolders
 			);

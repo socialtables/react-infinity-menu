@@ -138,6 +138,7 @@ export default class ObjectsOptions extends React.Component {
 			else {
 				prevs.push(
 					<li key={itemKey}
+						className="infinity-menu-leaf-container"
 						onMouseDown={(e) => this.props.onLeafMouseDown ? this.props.onLeafMouseDown(e, curr) : null}
 						onMouseUp={(e) => this.props.onLeafMouseUp ? this.props.onLeafMouseUp(e, curr) : null}
 						onClick={(e) => this.props.onLeafMouseClick ? this.props.onLeafMouseClick(e, curr) : null}
@@ -166,7 +167,9 @@ export default class ObjectsOptions extends React.Component {
 				else {
 					prevs.push(
 						<div key={key}
-							onClick={this.onFolderClicked.bind(this, folderTree, curr, keyPath)}>
+							onClick={this.onFolderClicked.bind(this, folderTree, curr, keyPath)}
+							className="infinity-menu-node-container"
+						>
 							<label>{folderName}</label>
 						</div>
 					);
@@ -194,7 +197,9 @@ export default class ObjectsOptions extends React.Component {
 					else {
 						openedFolder.push(
 							<div key={key}
-								onClick={this.onFolderClicked.bind(this, folderTree, curr, keyPath)}>
+								onClick={this.onFolderClicked.bind(this, folderTree, curr, keyPath)}
+								className="infinity-menu-node-container"
+							>
 								<label>{folderName}</label>
 								{icon}
 							</div>
@@ -255,7 +260,7 @@ export default class ObjectsOptions extends React.Component {
 		const headerContent = this.props.headerContent ? React.createElement(this.props.headerContent, headerProps) : null;
 
 		return (
-			<div>
+			<div className="infinity-menu-container">
 				{headerContent}
 				{displayFolders}
 			</div>
