@@ -19,8 +19,6 @@
   },
   "homepage": "https://github.com/socialtables/menu-drawer-objects-options-subcomponent",
   "dependencies": {
-    "@socialtables/css-assets": "latest",
-    "classnames": "^2.1.3",
     "immutable": "^3.7.4"
   },
   "devDependencies": {
