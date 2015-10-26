@@ -14,10 +14,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var _classnames = require("classnames");
-
-var _classnames2 = _interopRequireDefault(_classnames);
-
 var _immutable = require("immutable");
 
 var _react = require("react");
@@ -46,6 +42,9 @@ var ObjectsOptions = (function (_React$Component) {
 				searchInput: ""
 			}
 		};
+		this.setSearchInput = this.setSearchInput.bind(this);
+		this.stopSearching = this.stopSearching.bind(this);
+		this.startSearching = this.startSearching.bind(this);
 	}
 
 	/*
@@ -166,26 +165,38 @@ var ObjectsOptions = (function (_React$Component) {
 			/*the leaves*/
 			if (!curr.get("children")) {
 				var itemKey = "objects-options-leaf-" + curr.get("id");
-				prevs.push(_react2["default"].createElement(
-					"li",
-					{ key: itemKey, className: "st-vm-objects-options-folder-item",
-						onMouseDown: function (e) {
-							return _this2.props.onLeafMouseDown ? _this2.props.onLeafMouseDown(e, curr) : null;
+				if (curr.get("customComponent")) {
+					var componentProps = {
+						key: itemKey,
+						onLeafMouseDown: this.props.onLeafMouseDown,
+						onLeafMouseUp: this.props.onLeafMouseUp,
+						onLeafMouseClick: this.props.onLeafMouseClick,
+						name: curr.get("name"),
+						icon: curr.get("icon"),
+						data: curr
+					};
+					prevs.push(_react2["default"].createElement(curr.get("customComponent"), componentProps));
+				} else {
+					prevs.push(_react2["default"].createElement(
+						"li",
+						{ key: itemKey,
+							onMouseDown: function (e) {
+								return _this2.props.onLeafMouseDown ? _this2.props.onLeafMouseDown(e, curr) : null;
+							},
+							onMouseUp: function (e) {
+								return _this2.props.onLeafMouseUp ? _this2.props.onLeafMouseUp(e, curr) : null;
+							},
+							onClick: function (e) {
+								return _this2.props.onLeafMouseClick ? _this2.props.onLeafMouseClick(e, curr) : null;
+							}
 						},
-						onMouseUp: function (e) {
-							return _this2.props.onLeafMouseUp ? _this2.props.onLeafMouseUp(e, curr) : null;
-						},
-						onClick: function (e) {
-							return _this2.props.onLeafMouseClick ? _this2.props.onLeafMouseClick(e, curr) : null;
-						}
-					},
-					_react2["default"].createElement(
-						"span",
-						{ className: "st-vm-objects-options-folder-item-name" },
-						curr.get("name")
-					),
-					_react2["default"].createElement("i", { className: "st-vm-floor-element-icon " + curr.get("icon") })
-				));
+						_react2["default"].createElement(
+							"span",
+							null,
+							curr.get("name")
+						)
+					));
+				}
 				return prevs;
 			}
 			/*the node*/
@@ -193,17 +204,27 @@ var ObjectsOptions = (function (_React$Component) {
 					var key = "object-options-node-" + currLevel + "-" + curr.get("id");
 					var folderName = curr.get("name");
 					if (!curr.get("isOpen")) {
-						prevs.push(_react2["default"].createElement(
-							"div",
-							{ key: key, className: "st-vm-objects-options-folder",
-								onClick: this.onFolderClicked.bind(this, folderTree, curr, keyPath) },
-							_react2["default"].createElement(
-								"label",
-								{ className: "st-vm-objects-options-folder-type" },
-								folderName
-							),
-							_react2["default"].createElement("i", { className: "st-icon st-icon-right" })
-						));
+						if (curr.get("customComponent")) {
+							var folderProps = {
+								onFolderClicked: this.onFolderClicked.bind(this, folderTree, curr, keyPath),
+								folderName: folderName,
+								isOpen: curr.get("isOpen"),
+								isSearching: false,
+								key: key
+							};
+							prevs.push(_react2["default"].createElement(curr.get("customComponent"), folderProps));
+						} else {
+							prevs.push(_react2["default"].createElement(
+								"div",
+								{ key: key,
+									onClick: this.onFolderClicked.bind(this, folderTree, curr, keyPath) },
+								_react2["default"].createElement(
+									"label",
+									null,
+									folderName
+								)
+							));
+						}
 						return prevs;
 					} else {
 						var openedFolder = [];
@@ -213,17 +234,28 @@ var ObjectsOptions = (function (_React$Component) {
 						/*unname folder is not showing as parent*/
 						var isDefault = curr.get("name") === "";
 						if (!isDefault) {
-							openedFolder.push(_react2["default"].createElement(
-								"div",
-								{ key: key, className: "st-vm-objects-options-folder",
-									onClick: this.onFolderClicked.bind(this, folderTree, curr, keyPath) },
-								_react2["default"].createElement(
-									"label",
-									{ className: "st-vm-objects-options-folder-type" },
-									folderName
-								),
-								icon
-							));
+							if (curr.get("customComponent")) {
+								var folderProps = {
+									onFolderClicked: this.onFolderClicked.bind(this, folderTree, curr, keyPath),
+									folderName: folderName,
+									isOpen: curr.get("isOpen"),
+									key: key,
+									isSearching: isSearching
+								};
+								openedFolder.push(_react2["default"].createElement(curr.get("customComponent"), folderProps));
+							} else {
+								openedFolder.push(_react2["default"].createElement(
+									"div",
+									{ key: key,
+										onClick: this.onFolderClicked.bind(this, folderTree, curr, keyPath) },
+									_react2["default"].createElement(
+										"label",
+										null,
+										folderName
+									),
+									icon
+								));
+							}
 						}
 
 						var floorElementsLIs = curr.get("children").size ? curr.get("children").reduce(function (p, c, k) {
@@ -237,8 +269,7 @@ var ObjectsOptions = (function (_React$Component) {
 						if (floorElementsLIs.length > 0) {
 							openedFolder.push(_react2["default"].createElement(
 								"ul",
-								{ key: "objects-folder-list" + currLevel,
-									className: "st-vm-objects-options-folder-list" },
+								{ key: "objects-folder-list" + currLevel },
 								floorElementsLIs
 							));
 						}
@@ -273,50 +304,19 @@ var ObjectsOptions = (function (_React$Component) {
 				return _this3.setDisplayFolders(folderTree, folders, folder, [key]);
 			}, []);
 
-			var searchClassNames = (0, _classnames2["default"])({
-				"st-vm-objects-search": true,
-				"collapsed": !this.state.search.isSearching
-			});
-
-			var headerContent = undefined;
-			if (this.state.search.isSearching) {
-				headerContent = _react2["default"].createElement(
-					"div",
-					{ className: "st-vm-objects-options-header" },
-					_react2["default"].createElement(
-						"div",
-						{ className: searchClassNames },
-						_react2["default"].createElement("i", { className: "st-vm-objects-icon st-icon-search" }),
-						_react2["default"].createElement("input", { type: "text", placeholder: "Search Objects...",
-							value: this.state.search.searchInput,
-							onChange: this.setSearchInput.bind(this) }),
-						_react2["default"].createElement("i", { className: "st-vm-objects-icon st-icon-close",
-							onClick: this.stopSearching.bind(this) })
-					)
-				);
-			} else {
-				headerContent = _react2["default"].createElement(
-					"div",
-					{ className: "st-vm-objects-options-header" },
-					_react2["default"].createElement("i", { className: "st-vm-objects-icon st-icon-arrow-left",
-						onClick: this.props.onClose }),
-					_react2["default"].createElement(
-						"label",
-						null,
-						"Objects"
-					),
-					_react2["default"].createElement(
-						"div",
-						{ className: searchClassNames },
-						_react2["default"].createElement("i", { className: "st-vm-objects-icon st-icon-search",
-							onClick: this.startSearching.bind(this) })
-					)
-				);
-			}
+			var headerProps = {
+				isSearching: this.state.search.isSearching,
+				searchInput: this.state.search.searchInput,
+				setSearchInput: this.setSearchInput,
+				stopSearching: this.stopSearching,
+				startSearching: this.startSearching,
+				onClose: this.props.onClose
+			};
+			var headerContent = this.props.headerContent ? _react2["default"].createElement(this.props.headerContent, headerProps) : null;
 
 			return _react2["default"].createElement(
 				"div",
-				{ key: "st-vm-objects-options", className: "st-vm-objects-options" },
+				null,
 				headerContent,
 				displayFolders
 			);

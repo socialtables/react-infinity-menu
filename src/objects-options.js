@@ -1,4 +1,3 @@
-import classNames from "classnames";
 import { OrderedMap, fromJS } from "immutable";
 import React from "react";
 
@@ -18,6 +17,9 @@ export default class ObjectsOptions extends React.Component {
 				searchInput: ""
 			}
 		};
+		this.setSearchInput = this.setSearchInput.bind(this);
+		this.stopSearching = this.stopSearching.bind(this);
+		this.startSearching = this.startSearching.bind(this);
 	}
 	/*
 	 *	@function onFolderClicked
@@ -121,16 +123,29 @@ export default class ObjectsOptions extends React.Component {
 		/*the leaves*/
 		if (!curr.get("children")) {
 			const itemKey = "objects-options-leaf-" + curr.get("id");
-			prevs.push(
-				<li key={itemKey} className="st-vm-objects-options-folder-item"
-					onMouseDown={(e) => this.props.onLeafMouseDown ? this.props.onLeafMouseDown(e, curr) : null}
-					onMouseUp={(e) => this.props.onLeafMouseUp ? this.props.onLeafMouseUp(e, curr) : null}
-					onClick={(e) => this.props.onLeafMouseClick ? this.props.onLeafMouseClick(e, curr) : null}
-					>
-					<span className="st-vm-objects-options-folder-item-name">{curr.get("name")}</span>
-					<i className={"st-vm-floor-element-icon " + curr.get("icon")}></i>
-				</li>
-			);
+			if (curr.get("customComponent")) {
+				const componentProps = {
+					key: itemKey,
+					onLeafMouseDown: this.props.onLeafMouseDown,
+					onLeafMouseUp: this.props.onLeafMouseUp,
+					onLeafMouseClick: this.props.onLeafMouseClick,
+					name: curr.get("name"),
+					icon: curr.get("icon"),
+					data: curr
+				};
+				prevs.push(React.createElement(curr.get("customComponent"), componentProps));
+			}
+			else {
+				prevs.push(
+					<li key={itemKey}
+						onMouseDown={(e) => this.props.onLeafMouseDown ? this.props.onLeafMouseDown(e, curr) : null}
+						onMouseUp={(e) => this.props.onLeafMouseUp ? this.props.onLeafMouseUp(e, curr) : null}
+						onClick={(e) => this.props.onLeafMouseClick ? this.props.onLeafMouseClick(e, curr) : null}
+						>
+						<span>{curr.get("name")}</span>
+					</li>
+				);
+			}
 			return prevs;
 		}
 		/*the node*/
@@ -138,13 +153,24 @@ export default class ObjectsOptions extends React.Component {
 			const key = "object-options-node-" + currLevel + "-" + curr.get("id");
 			const folderName = curr.get("name");
 			if (!curr.get("isOpen")) {
-				prevs.push(
-					<div key={key} className="st-vm-objects-options-folder"
-						onClick={this.onFolderClicked.bind(this, folderTree, curr, keyPath)}>
-						<label className="st-vm-objects-options-folder-type">{folderName}</label>
-						<i className="st-icon st-icon-right"></i>
-					</div>
-				);
+				if (curr.get("customComponent")) {
+					const folderProps = {
+						onFolderClicked: this.onFolderClicked.bind(this, folderTree, curr, keyPath),
+						folderName: folderName,
+						isOpen: curr.get("isOpen"),
+						isSearching: false,
+						key
+					};
+					prevs.push(React.createElement(curr.get("customComponent"), folderProps));
+				}
+				else {
+					prevs.push(
+						<div key={key}
+							onClick={this.onFolderClicked.bind(this, folderTree, curr, keyPath)}>
+							<label>{folderName}</label>
+						</div>
+					);
+				}
 				return prevs;
 			}
 			else {
@@ -155,13 +181,25 @@ export default class ObjectsOptions extends React.Component {
 				/*unname folder is not showing as parent*/
 				const isDefault = curr.get("name") === "";
 				if (!isDefault) {
-					openedFolder.push(
-						<div key={key} className="st-vm-objects-options-folder"
-							onClick={this.onFolderClicked.bind(this, folderTree, curr, keyPath)}>
-							<label className="st-vm-objects-options-folder-type">{folderName}</label>
-							{icon}
-						</div>
-					);
+					if (curr.get("customComponent")) {
+						const folderProps = {
+							onFolderClicked: this.onFolderClicked.bind(this, folderTree, curr, keyPath),
+							folderName: folderName,
+							isOpen: curr.get("isOpen"),
+							key,
+							isSearching
+						};
+						openedFolder.push(React.createElement(curr.get("customComponent"), folderProps));
+					}
+					else {
+						openedFolder.push(
+							<div key={key}
+								onClick={this.onFolderClicked.bind(this, folderTree, curr, keyPath)}>
+								<label>{folderName}</label>
+								{icon}
+							</div>
+						);
+					}
 				}
 
 				const floorElementsLIs = curr.get("children").size ? curr.get("children").reduce((p, c, k) => {
@@ -174,8 +212,7 @@ export default class ObjectsOptions extends React.Component {
 
 				if (floorElementsLIs.length > 0) {
 					openedFolder.push(
-						<ul key={"objects-folder-list" + currLevel}
-							className="st-vm-objects-options-folder-list">
+						<ul key={"objects-folder-list" + currLevel}>
 							{floorElementsLIs}
 						</ul>
 					);
@@ -207,41 +244,18 @@ export default class ObjectsOptions extends React.Component {
 			return this.setDisplayFolders(folderTree, folders, folder, [key]);
 		}, []);
 
-		const searchClassNames = classNames({
-			"st-vm-objects-search": true,
-			"collapsed": !this.state.search.isSearching
-		});
-
-
-		let headerContent;
-		if (this.state.search.isSearching) {
-			headerContent =
-				<div className="st-vm-objects-options-header">
-					<div className={searchClassNames}>
-						<i className="st-vm-objects-icon st-icon-search"></i>
-						<input type="text" placeholder="Search Objects..."
-							value={this.state.search.searchInput}
-							onChange={this.setSearchInput.bind(this)}></input>
-						<i className="st-vm-objects-icon st-icon-close"
-							onClick={this.stopSearching.bind(this)}></i>
-					</div>
-				</div>;
-		}
-		else {
-			headerContent =
-				<div className="st-vm-objects-options-header">
-					<i className="st-vm-objects-icon st-icon-arrow-left"
-						onClick={this.props.onClose}></i>
-					<label>Objects</label>
-					<div className={searchClassNames}>
-						<i className="st-vm-objects-icon st-icon-search"
-						onClick={this.startSearching.bind(this)}></i>
-					</div>
-				</div>;
-		}
+		const headerProps = {
+			isSearching: this.state.search.isSearching,
+			searchInput: this.state.search.searchInput,
+			setSearchInput: this.setSearchInput,
+			stopSearching: this.stopSearching,
+			startSearching: this.startSearching,
+			onClose: this.props.onClose
+		};
+		const headerContent = this.props.headerContent ? React.createElement(this.props.headerContent, headerProps) : null;
 
 		return (
-			<div key="st-vm-objects-options" className="st-vm-objects-options">
+			<div>
 				{headerContent}
 				{displayFolders}
 			</div>
