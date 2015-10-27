@@ -12,7 +12,8 @@
 
 ```js
 import ObjectsOptions from "@socialtables/menu-drawer-objects-options-subcomponent";
-import "@socialtables/menu-drawer-objects-options-subcomponent/src/objects-options.less";
+import "@socialtables/menu-drawer-objects-options-subcomponent/src/objects-options.css";
+
 class Example extends React.Component {
 	onNodeMouseClick(event, tree, node, level) {
 		this.setState({
