@@ -11,21 +11,20 @@ describe("Test for ObjectsOptions", function() {
 	let component;
 	let dom;
 	let onNodeMouseClickStub, onLeafMouseClickStub, onLeafMouseDownStub, onLeafMouseUpStub, onCloseStub;
+	class TestCustomComponent extends React.Component {
+		render() {
+			return (<div className="test-custom-component"/>);
+		}
+	}
 
 	before(function() {
-		class testCustomComponent extends React.Component {
-			render() {
-				return (<div className="test-custom-component"/>);
-			}
-		}
-
 		const tree =
 		[
 			{
 				name: "menu1",
 				id: 1,
 				isOpen: true,
-				customComponent: testCustomComponent,
+				customComponent: TestCustomComponent,
 				children: [
 					{
 						name: "submenu1",
@@ -139,12 +138,11 @@ describe("Test for ObjectsOptions", function() {
 	});
 
 	it("should have test-custom-component", function () {
-		var customComponent = React.findDOMNode(
+		assert.doesNotThrow(() => {
 			TestUtils.findRenderedDOMComponentWithClass(
 				dom,
 				"test-custom-component"
-			)[0]
-		);
-		assert.notEqual(customComponent, "");
+			);
+		});
 	});
 });

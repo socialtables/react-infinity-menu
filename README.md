@@ -109,7 +109,7 @@ Here is the example data you could pass into the tree props.
 	}
 ];
 ```
-  * `customComponent` is an react component user can pass in as an highly customizable object.
+  * `customComponent` is a React component the user can pass in.
     * As the `customComponent` at the node level, you will receive props `key`,  `onClick`, `name`, `isOpen` and `isSearching`.
 	* As the `customComponent` at the leaf level, you will receive props `key`, `onMouseDown`, `onMouseUp`, `onClick`, `name`, `icon` and `data`.
 
@@ -127,7 +127,7 @@ Bind to the onClick on the leaf.
 This function will get call when user click on the item(leaf).
 The function arguments include ```event```, ```leaf```.
 ```event``` is the click event.
-```leaf``` is the item user clicked on. Includes name, id and all data user puts in when they pass in the tree.
+```leaf``` is the item user clicked on. Includes name, id and all data the user inputs when they pass in the tree.
 
 
 * #### onLeafMouseDown(function)[event, leaf]
@@ -135,7 +135,7 @@ Bind to the onMouseDown on the leaf.
 This function will get call when user mouse down on the item(leaf).
 The function arguments include ```event```, ```leaf```.
 ```event``` is the click event.
-```leaf``` is the item user clicked on. Includes name, id and all data user puts in when they pass in the tree.
+```leaf``` is the item user clicked on. Includes name, id and all data the user inputs when they pass in the tree.
 
 
 * #### onLeafMouseUp(function)[event, leaf]
@@ -143,7 +143,11 @@ Bind to the onMouseUp on the leaf.
 This function will get call when user mouse up on the item(leaf).
 The function arguments include ```event```, ```leaf```.
 ```event``` is the click event.
-```leaf``` is the item user clicked on. Includes name, id and all data user puts in when they pass in the tree.
+```leaf``` is the item user clicked on. Includes name, id and all data the user inputs when they pass in the tree.
 
 * #### onClose(function)
 This function will get call when use click the cross on the menu
+
+# Styles
+There is a default style sheet you can use if you so desire.
+`objects-option.css`

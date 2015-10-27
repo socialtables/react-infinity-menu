@@ -232,7 +232,6 @@ var ObjectsOptions = (function (_React$Component) {
 					} else {
 						var openedFolder = [];
 						var isSearching = this.state.search.isSearching && this.state.search.searchInput.length;
-						var icon = isSearching ? "" : _react2["default"].createElement("i", { className: "st-icon st-icon-down" });
 
 						/*unname folder is not showing as parent*/
 						var isDefault = curr.get("name") === "";
@@ -257,8 +256,7 @@ var ObjectsOptions = (function (_React$Component) {
 										"label",
 										null,
 										folderName
-									),
-									icon
+									)
 								));
 							}
 						}

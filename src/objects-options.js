@@ -179,7 +179,6 @@ export default class ObjectsOptions extends React.Component {
 			else {
 				let openedFolder = [];
 				const isSearching = this.state.search.isSearching && this.state.search.searchInput.length;
-				const icon = isSearching ? "" : <i className="st-icon st-icon-down"></i>;
 
 				/*unname folder is not showing as parent*/
 				const isDefault = curr.get("name") === "";
@@ -201,7 +200,6 @@ export default class ObjectsOptions extends React.Component {
 								className="infinity-menu-node-container"
 							>
 								<label>{folderName}</label>
-								{icon}
 							</div>
 						);
 					}
