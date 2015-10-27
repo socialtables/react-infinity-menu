@@ -11,6 +11,11 @@ describe("Test for ObjectsOptions", function() {
 	let component;
 	let dom;
 	let onNodeMouseClickStub, onLeafMouseClickStub, onLeafMouseDownStub, onLeafMouseUpStub, onCloseStub;
+	class TestCustomComponent extends React.Component {
+		render() {
+			return (<div className="test-custom-component"/>);
+		}
+	}
 
 	before(function() {
 		const tree =
@@ -19,6 +24,7 @@ describe("Test for ObjectsOptions", function() {
 				name: "menu1",
 				id: 1,
 				isOpen: true,
+				customComponent: TestCustomComponent,
 				children: [
 					{
 						name: "submenu1",
@@ -79,7 +85,7 @@ describe("Test for ObjectsOptions", function() {
 	it("should render correctly with folder tree", function () {
 		shallowRenderer.render(component);
 		var result = shallowRenderer.getRenderOutput();
-		assert.equal(result.props.className, "st-vm-objects-options");
+		assert.equal(result.props.className, "infinity-menu-container");
 	});
 
 
@@ -87,7 +93,7 @@ describe("Test for ObjectsOptions", function() {
 		var folderNode = React.findDOMNode(
 			TestUtils.scryRenderedDOMComponentsWithClass(
 				dom,
-				"st-vm-objects-options-folder"
+				"infinity-menu-node-container"
 			)[0]
 		);
 		onNodeMouseClickStub.should.have.callCount(0);
@@ -99,7 +105,7 @@ describe("Test for ObjectsOptions", function() {
 		var leaf = React.findDOMNode(
 			TestUtils.scryRenderedDOMComponentsWithClass(
 				dom,
-				"st-vm-objects-options-folder-item"
+				"infinity-menu-leaf-container"
 			)[0]
 		);
 		onLeafMouseClickStub.should.have.callCount(0);
@@ -111,7 +117,7 @@ describe("Test for ObjectsOptions", function() {
 		var leaf = React.findDOMNode(
 			TestUtils.scryRenderedDOMComponentsWithClass(
 				dom,
-				"st-vm-objects-options-folder-item"
+				"infinity-menu-leaf-container"
 			)[0]
 		);
 		onLeafMouseDownStub.should.have.callCount(0);
@@ -123,7 +129,7 @@ describe("Test for ObjectsOptions", function() {
 		var leaf = React.findDOMNode(
 			TestUtils.scryRenderedDOMComponentsWithClass(
 				dom,
-				"st-vm-objects-options-folder-item"
+				"infinity-menu-leaf-container"
 			)[0]
 		);
 		onLeafMouseUpStub.should.have.callCount(0);
@@ -131,17 +137,12 @@ describe("Test for ObjectsOptions", function() {
 		onLeafMouseUpStub.should.have.callCount(1);
 	});
 
-
-	it("should call onClose function", function () {
-		var closeButton = React.findDOMNode(
+	it("should have test-custom-component", function () {
+		assert.doesNotThrow(() => {
 			TestUtils.findRenderedDOMComponentWithClass(
 				dom,
-				"st-icon-arrow-left"
-			)
-		);
-		onCloseStub.should.have.callCount(0);
-		TestUtils.Simulate.click(closeButton);
-		onCloseStub.should.have.callCount(1);
+				"test-custom-component"
+			);
+		});
 	});
-
 });
