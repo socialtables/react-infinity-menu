@@ -4,7 +4,7 @@
   "description": "",
   "main": "./dist/objects-options.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha --compilers js:babel/register --recursive",
     "build": "babel src -d dist",
     "watch": "babel src --watch -d dist",
     "prepublish": "npm run build"
@@ -19,17 +19,21 @@
   },
   "homepage": "https://github.com/socialtables/menu-drawer-objects-options-subcomponent",
   "dependencies": {
-    "@socialtables/css-assets": "latest",
-    "classnames": "^2.1.3",
-    "immutable": "^3.7.4",
-    "react": "~0.13.2",
-    "uuid": "^2.0.1"
+    "immutable": "^3.7.4"
   },
   "devDependencies": {
     "babel": "^5.8.23",
     "babel-core": "^5.8.25",
     "eslint": "^0.23.0",
     "eslint-loader": "^0.14.0",
-    "eslint-plugin-react": "^2.7.1"
+    "eslint-plugin-react": "^2.7.1",
+    "jsdom": "^6.5.1",
+    "mocha": "^2.3.3",
+    "should": "^7.1.0",
+    "should-sinon": "0.0.3",
+    "sinon": "^1.17.1"
+  },
+  "peerDependencies": {
+    "react": "^0.13.2"
   }
 }

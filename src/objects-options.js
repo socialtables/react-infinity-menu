@@ -1,7 +1,4 @@
-import FloorElementsByFolder from "./floor-elements-by-folder";
-import uuid from "uuid";
-import classNames from "classnames";
-import { Map, OrderedMap, List } from "immutable";
+import { OrderedMap, fromJS } from "immutable";
 import React from "react";
 
 /*
@@ -18,66 +15,29 @@ export default class ObjectsOptions extends React.Component {
 			search: {
 				isSearching: false,
 				searchInput: ""
-			},
-			floorElementsByFolder: FloorElementsByFolder(this.props.getFloorElementConfig, this.props.floorElementUIConfig)
+			}
 		};
+		this.setSearchInput = this.setSearchInput.bind(this);
+		this.stopSearching = this.stopSearching.bind(this);
+		this.startSearching = this.startSearching.bind(this);
 	}
 	/*
-	 *	@function folderClicked
+	 *	@function onFolderClicked
 	 *	@description open or close folder
 	 *
 	 *	@param {string} folder - key name of folder object
 	 */
-	folderClicked(folderName) {
+	onFolderClicked(folderTree, folder, keyPath, event) {
+		event.preventDefault();
 		if (!this.state.search.isSearching || !this.state.search.searchInput.length) {
-			const folder = this.state.floorElementsByFolder.get(folderName);
 			const newFolder = folder.set("isOpen", !folder.get("isOpen"));
-			const newFolders = this.state.floorElementsByFolder.set(folderName, newFolder);
-			this.setState({ floorElementsByFolder: newFolders});
+			const newFolders = folderTree.setIn(keyPath, newFolder);
+			if (this.props.onNodeMouseClick) {
+				const currLevel = Math.floor(keyPath.length / 2);
+				this.props.onNodeMouseClick(event, newFolders.toJS(), newFolder.toJS(), currLevel);
+			}
 		}
 	}
-	/*
-	 *	@function onMouseUp
-	 *	@description when fe from list is clicked
-	 *
-	 *	@param {object} feClicked - reference to the fe object
-	 *	@param {object} event - React Synthetic Event
-	 */
-	onMouseDown(feClicked, event){
-		event.preventDefault();
-		const maxLayer = this.props.getMinFloorElementLayer();
-		const fe = feClicked.get("config")().withMutations((el) => {
-			el.set("pos_x", 0);
-			el.set("pos_y", 0);
-			el.set("layer", maxLayer + 1);
-		});
-		const newFEs = OrderedMap();
-
-		this.props.updateActiveTool("selector");
-		this.props.updateMetadata(Map({
-			dragX: 0,
-			dragY: 0,
-			isDragging: true,
-			floorElementTypeMenu: newFEs.set(uuid.v4(), fe)
-		}));
-	}
-	/*
-	 *	@function onMouseUp
-	 *	@description when fe from list is dragged and the mouse click is released
-	 *
-	 *	@param {object} event - React Synthetic Event
-	 */
-	onMouseUp(event) {
-		event.preventDefault();
-
-		this.props.updateActiveTool("selector");
-		this.props.updateMetadata(Map({
-			dragX: null,
-			dragY: null,
-			isDragging: false,
-			floorElementTypeMenu: null
-		}));
-	};
 	/*
 	 *	@function shouldComponentUpdate
 	 *	@description check for edge cases with filtering that can cause loops
@@ -88,11 +48,13 @@ export default class ObjectsOptions extends React.Component {
 	 *	@returns {boolean} true if something changed based on user interaction
 	 */
 	shouldComponentUpdate(nextProps, nextState) {
+		if (this.props.tree !== nextProps.tree) {
+			return true;
+		}
+
 		if (this.state.search.isSearching &&
 			this.state.search.isSearching === nextState.search.isSearching &&
-			this.state.search.searchInput === nextState.search.searchInput &&
-			this.state.floorElementsByFolder === nextState.floorElementsByFolder) {
-
+			this.state.search.searchInput === nextState.search.searchInput) {
 			return false;
 		}
 		return true;
@@ -133,115 +95,191 @@ export default class ObjectsOptions extends React.Component {
 			}
 		});
 	}
+
+	findFilted(folders, folder, key) {
+		if (!folder.get("children")) {
+			if (folder.get("name").toLowerCase().includes(this.state.search.searchInput.toLowerCase())) {
+				return folders.set(key, folder);
+			}
+			else {
+				return folders;
+			}
+		}
+		else {
+			const filteredSubFolder = folder.get("children").size ? folder.get("children").reduce((p, c, k) => {
+				return this.findFilted(p, c, k);
+			}, OrderedMap()) : OrderedMap();
+			if (filteredSubFolder.size !== 0) {
+				return folders.set(key, folder.set("isOpen", true).set("children", filteredSubFolder));
+			}
+			else {
+				return folders;
+			}
+		}
+	}
+
+	setDisplayFolders(folderTree, prevs, curr, keyPath) {
+		const currLevel = Math.floor(keyPath / 2);
+		/*the leaves*/
+		if (!curr.get("children")) {
+			const itemKey = "objects-options-leaf-" + curr.get("id");
+			if (curr.get("customComponent")) {
+				const componentProps = {
+					key: itemKey,
+					onMouseDown: this.props.onLeafMouseDown,
+					onMouseUp: this.props.onLeafMouseUp,
+					onClick: this.props.onLeafMouseClick,
+					name: curr.get("name"),
+					icon: curr.get("icon"),
+					data: curr
+				};
+				prevs.push(React.createElement(curr.get("customComponent"), componentProps));
+			}
+			else {
+				prevs.push(
+					<li key={itemKey}
+						className="infinity-menu-leaf-container"
+						onMouseDown={(e) => this.props.onLeafMouseDown ? this.props.onLeafMouseDown(e, curr) : null}
+						onMouseUp={(e) => this.props.onLeafMouseUp ? this.props.onLeafMouseUp(e, curr) : null}
+						onClick={(e) => this.props.onLeafMouseClick ? this.props.onLeafMouseClick(e, curr) : null}
+						>
+						<span>{curr.get("name")}</span>
+					</li>
+				);
+			}
+			return prevs;
+		}
+		/*the node*/
+		else {
+			const key = "object-options-node-" + currLevel + "-" + curr.get("id");
+			const folderName = curr.get("name");
+			if (!curr.get("isOpen")) {
+				if (curr.get("customComponent")) {
+					const folderProps = {
+						onClick: this.onFolderClicked.bind(this, folderTree, curr, keyPath),
+						name: folderName,
+						isOpen: curr.get("isOpen"),
+						isSearching: false,
+						key
+					};
+					prevs.push(React.createElement(curr.get("customComponent"), folderProps));
+				}
+				else {
+					prevs.push(
+						<div key={key}
+							onClick={this.onFolderClicked.bind(this, folderTree, curr, keyPath)}
+							className="infinity-menu-node-container"
+						>
+							<label>{folderName}</label>
+						</div>
+					);
+				}
+				return prevs;
+			}
+			else {
+				let openedFolder = [];
+				const isSearching = this.state.search.isSearching && this.state.search.searchInput.length;
+
+				/*unname folder is not showing as parent*/
+				const isDefault = curr.get("name") === "";
+				if (!isDefault) {
+					if (curr.get("customComponent")) {
+						const folderProps = {
+							onClick: this.onFolderClicked.bind(this, folderTree, curr, keyPath),
+							name: folderName,
+							isOpen: curr.get("isOpen"),
+							key,
+							isSearching
+						};
+						openedFolder.push(React.createElement(curr.get("customComponent"), folderProps));
+					}
+					else {
+						openedFolder.push(
+							<div key={key}
+								onClick={this.onFolderClicked.bind(this, folderTree, curr, keyPath)}
+								className="infinity-menu-node-container"
+							>
+								<label>{folderName}</label>
+							</div>
+						);
+					}
+				}
+
+				const floorElementsLIs = curr.get("children").size ? curr.get("children").reduce((p, c, k) => {
+					if (c === undefined || k === undefined) {
+						return p;
+					}
+					const newKeyPath = [].concat(keyPath).concat(["children", k]);
+					return this.setDisplayFolders(folderTree, p, c, newKeyPath);
+				}, []) : [];
+
+				if (floorElementsLIs.length > 0) {
+					openedFolder.push(
+						<ul key={"objects-folder-list" + currLevel}>
+							{floorElementsLIs}
+						</ul>
+					);
+				}
+				prevs.push(openedFolder);
+				return prevs;
+			}
+		}
+	}
 	/*
 	 *  @function render
 	 *  @description React render method for creating objects menu drawer content
 	 */
 	render() {
-		const floorElementsByFolder = this.state.floorElementsByFolder;
-		const filteredFolders = floorElementsByFolder.reduce((folders, folder, key) => {
-			const searchMatches = folder.get("floorElements").reduce((fes, fe) => {
-				if (fe.get("name").toLowerCase().includes(this.state.search.searchInput.toLowerCase())) {
-					return fes.push(fe);
-				}
-				else {
-					return fes;
-				}
-			}, List());
-			if (searchMatches.size) {
-				const isOpen = this.state.search.isSearching && this.state.search.searchInput.length || folder.get("isOpen");
-				const newFolder = folder.withMutations((updatedFolder) => updatedFolder.set("isOpen", isOpen).set("floorElements", searchMatches));
-				const newFolders = folders.set(key, newFolder);
-				return newFolders;
-			}
-			else {
+		const folderTree = fromJS(this.props.tree);
+		/*find filtered folders base on search, if there no search, return all*/
+		const filteredFolders = this.state.search.isSearching && this.state.search.searchInput.length ? folderTree.reduce((folders, folder, key) => {
+			if (key === undefined) {
 				return folders;
 			}
-		}, OrderedMap());
-		const displayFolders = filteredFolders.reduce((folders, folder, folderName) => {
-			const key = "object-options-folder-" + uuid.v4();
-			if (!folder.get("isOpen")) {
-				folders.push(
-					<div key={key} className="st-vm-objects-options-folder"
-						onClick={this.folderClicked.bind(this, folderName)}>
+			return this.findFilted(folders, folder, key);
+		}, OrderedMap()) : folderTree;
 
-						<label className="st-vm-objects-options-folder-type">{folderName}</label>
-						<i className="st-icon st-icon-right"></i>
-					</div>
-				);
+
+		const displayFolders = filteredFolders.reduce((folders, folder, key) => {
+			if (key === undefined) {
 				return folders;
 			}
-			else {
-				let chevronFolders = [];
-				const isSearching = this.state.search.isSearching && this.state.search.searchInput.length;
-				const icon = isSearching ? "" : <i className="st-icon st-icon-down"></i>;
-				chevronFolders.push(
-					<div key={key} className="st-vm-objects-options-folder"
-						onClick={this.folderClicked.bind(this, folderName)}>
-
-						<label className="st-vm-objects-options-folder-type">{folderName}</label>
-						{icon}
-					</div>
-				);
-				const floorElementsLIs = folder.get("floorElements").map((fe) => {
-					const itemKey = "objects-folder-item-" + uuid.v4();
-
-					return (
-						<li key={itemKey} className="st-vm-objects-options-folder-item"
-							onMouseDown={this.onMouseDown.bind(this, fe)}
-							onMouseUp={this.onMouseUp.bind(this)}>
-
-							<span className="st-vm-objects-options-folder-item-name">{fe.get("name")}</span>
-							<i className={"st-vm-floor-element-icon " + fe.get("icon")}></i>
-						</li>
-					);
-				});
-				chevronFolders.push(
-					<ul key={"objects-folder-list-" + uuid.v4()}
-						className="st-vm-objects-options-folder-list">
-						{floorElementsLIs}
-					</ul>
-				);
-				folders.push(chevronFolders);
-				return folders;
-			}
+			return this.setDisplayFolders(folderTree, folders, folder, [key]);
 		}, []);
-		const searchClassNames = classNames({
-			"st-vm-objects-search": true,
-			"collapsed": !this.state.search.isSearching
-		});
-		let headerContent;
-		if (this.state.search.isSearching) {
-			headerContent =
-				<div className="st-vm-objects-options-header">
-					<div className={searchClassNames}>
-						<i className="st-vm-objects-icon st-icon-search"></i>
-						<input type="text" placeholder="Search Objects..."
-							value={this.state.search.searchInput}
-							onChange={this.setSearchInput.bind(this)}></input>
-						<i className="st-vm-objects-icon st-icon-close"
-							onClick={this.stopSearching.bind(this)}></i>
-					</div>
-				</div>;
-		}
-		else {
-			headerContent =
-				<div className="st-vm-objects-options-header">
-					<i className="st-vm-objects-icon st-icon-arrow-left"
-						onClick={this.props.close}></i>
-					<label>Objects</label>
-					<div className={searchClassNames}>
-						<i className="st-vm-objects-icon st-icon-search"
-						onClick={this.startSearching.bind(this)}></i>
-					</div>
-				</div>;
-		}
+
+		const headerProps = {
+			isSearching: this.state.search.isSearching,
+			searchInput: this.state.search.searchInput,
+			setSearchInput: this.setSearchInput,
+			stopSearching: this.stopSearching,
+			startSearching: this.startSearching,
+			onClose: this.props.onClose
+		};
+		const headerContent = this.props.headerContent ? React.createElement(this.props.headerContent, headerProps) : null;
 
 		return (
-			<div key="st-vm-objects-options" className="st-vm-objects-options">
+			<div className="infinity-menu-container">
 				{headerContent}
 				{displayFolders}
 			</div>
 		);
 	}
 }
+
+ObjectsOptions.propTypes = {
+	tree: React.PropTypes.array,
+	onNodeMouseClick: React.PropTypes.func,
+	onLeafMouseClick: React.PropTypes.func,
+	onLeafMouseDown: React.PropTypes.func,
+	onLeafMouseUp: React.PropTypes.func,
+	onClose: React.PropTypes.func
+};
+
+ObjectsOptions.defaultProps = {
+	tree: [],
+	onNodeMouseClick: ()=>{},
+	onLeafMouseClick: ()=>{},
+	onLeafMouseDown: ()=>{},
+	onLeafMouseUp: ()=>{},
+	onClose: ()=>{}
+};
