@@ -151,4 +151,4 @@ This function will get call when use click the cross on the menu
 
 # Styles
 There is a default style sheet you can use if you so desire.
-`objects-option.css`
+`/src/objects-option.css`
