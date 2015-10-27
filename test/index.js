@@ -13,12 +13,19 @@ describe("Test for ObjectsOptions", function() {
 	let onNodeMouseClickStub, onLeafMouseClickStub, onLeafMouseDownStub, onLeafMouseUpStub, onCloseStub;
 
 	before(function() {
+		class testCustomComponent extends React.Component {
+			render() {
+				return (<div className="test-custom-component"/>);
+			}
+		}
+
 		const tree =
 		[
 			{
 				name: "menu1",
 				id: 1,
 				isOpen: true,
+				customComponent: testCustomComponent,
 				children: [
 					{
 						name: "submenu1",
@@ -129,5 +136,15 @@ describe("Test for ObjectsOptions", function() {
 		onLeafMouseUpStub.should.have.callCount(0);
 		TestUtils.Simulate.mouseUp(leaf);
 		onLeafMouseUpStub.should.have.callCount(1);
+	});
+
+	it("should have test-custom-component", function () {
+		var customComponent = React.findDOMNode(
+			TestUtils.findRenderedDOMComponentWithClass(
+				dom,
+				"test-custom-component"
+			)[0]
+		);
+		assert.notEqual(customComponent, "");
 	});
 });

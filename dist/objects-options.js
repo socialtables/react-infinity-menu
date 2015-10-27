@@ -168,9 +168,9 @@ var ObjectsOptions = (function (_React$Component) {
 				if (curr.get("customComponent")) {
 					var componentProps = {
 						key: itemKey,
-						onLeafMouseDown: this.props.onLeafMouseDown,
-						onLeafMouseUp: this.props.onLeafMouseUp,
-						onLeafMouseClick: this.props.onLeafMouseClick,
+						onMouseDown: this.props.onLeafMouseDown,
+						onMouseUp: this.props.onLeafMouseUp,
+						onClick: this.props.onLeafMouseClick,
 						name: curr.get("name"),
 						icon: curr.get("icon"),
 						data: curr
@@ -207,8 +207,8 @@ var ObjectsOptions = (function (_React$Component) {
 					if (!curr.get("isOpen")) {
 						if (curr.get("customComponent")) {
 							var folderProps = {
-								onFolderClicked: this.onFolderClicked.bind(this, folderTree, curr, keyPath),
-								folderName: folderName,
+								onClick: this.onFolderClicked.bind(this, folderTree, curr, keyPath),
+								name: folderName,
 								isOpen: curr.get("isOpen"),
 								isSearching: false,
 								key: key
@@ -239,8 +239,8 @@ var ObjectsOptions = (function (_React$Component) {
 						if (!isDefault) {
 							if (curr.get("customComponent")) {
 								var folderProps = {
-									onFolderClicked: this.onFolderClicked.bind(this, folderTree, curr, keyPath),
-									folderName: folderName,
+									onClick: this.onFolderClicked.bind(this, folderTree, curr, keyPath),
+									name: folderName,
 									isOpen: curr.get("isOpen"),
 									key: key,
 									isSearching: isSearching
