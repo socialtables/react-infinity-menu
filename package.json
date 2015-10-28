@@ -19,7 +19,8 @@
   },
   "homepage": "https://github.com/socialtables/menu-drawer-objects-options-subcomponent",
   "dependencies": {
-    "immutable": "^3.7.4"
+    "deep-copy": "^1.1.0",
+    "nested-objects": "0.0.2"
   },
   "devDependencies": {
     "babel": "^5.8.23",
