@@ -4,6 +4,9 @@
 
 * An unlimited deep side menu
 
+# Demo
+![Awesome demo](/demo.gif)
+
 # Installation
 ``` npm install menu-drawer-objects-options-subcomponent```
 

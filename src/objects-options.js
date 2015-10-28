@@ -1,6 +1,6 @@
-import { OrderedMap, fromJS } from "immutable";
 import React from "react";
-
+import NestedObjects from "nested-objects";
+import dcopy from "deep-copy";
 /*
  *  @class ObjectsOptions
  *  @description content of Objects section in menu drawer
@@ -22,19 +22,19 @@ export default class ObjectsOptions extends React.Component {
 		this.startSearching = this.startSearching.bind(this);
 	}
 	/*
-	 *	@function onFolderClicked
+	 *	@function onNodeClick
 	 *	@description open or close folder
 	 *
 	 *	@param {string} folder - key name of folder object
 	 */
-	onFolderClicked(folderTree, folder, keyPath, event) {
+	onNodeClick(tree, node, keyPath, event) {
 		event.preventDefault();
 		if (!this.state.search.isSearching || !this.state.search.searchInput.length) {
-			const newFolder = folder.set("isOpen", !folder.get("isOpen"));
-			const newFolders = folderTree.setIn(keyPath, newFolder);
+			node.isOpen = !node.isOpen;
+			NestedObjects.set(tree, keyPath, node);
 			if (this.props.onNodeMouseClick) {
 				const currLevel = Math.floor(keyPath.length / 2);
-				this.props.onNodeMouseClick(event, newFolders.toJS(), newFolder.toJS(), currLevel);
+				this.props.onNodeMouseClick(event, tree, node, currLevel);
 			}
 		}
 	}
@@ -96,44 +96,48 @@ export default class ObjectsOptions extends React.Component {
 		});
 	}
 
-	findFilted(folders, folder, key) {
-		if (!folder.get("children")) {
-			if (folder.get("name").toLowerCase().includes(this.state.search.searchInput.toLowerCase())) {
-				return folders.set(key, folder);
+	findFilted(trees, node, key) {
+		if (!node.children) {
+			if (node.name.toLowerCase().includes(this.state.search.searchInput.toLowerCase())) {
+				trees[key] = node;
+				return trees;
 			}
 			else {
-				return folders;
+				return trees;
 			}
 		}
 		else {
-			const filteredSubFolder = folder.get("children").size ? folder.get("children").reduce((p, c, k) => {
+			const filteredSubFolder = node.children.length ? node.children.reduce((p, c, k) => {
 				return this.findFilted(p, c, k);
-			}, OrderedMap()) : OrderedMap();
-			if (filteredSubFolder.size !== 0) {
-				return folders.set(key, folder.set("isOpen", true).set("children", filteredSubFolder));
+			}, []) : [];
+			if (filteredSubFolder.length !== 0) {
+				node.isOpen = true;
+				node.children = filteredSubFolder;
+				trees[key] = node;
+				return trees;
 			}
 			else {
-				return folders;
+				return trees;
 			}
 		}
 	}
 
-	setDisplayFolders(folderTree, prevs, curr, keyPath) {
-		const currLevel = Math.floor(keyPath / 2);
+	setDisplayFolders(tree, prevs, curr, keyPath) {
+		const currLevel = Math.floor(keyPath.length / 2);
 		/*the leaves*/
-		if (!curr.get("children")) {
-			const itemKey = "objects-options-leaf-" + curr.get("id");
-			if (curr.get("customComponent")) {
+		if (!curr.children) {
+			const itemKey = "infinity-menu-leaf-" + curr.id;
+			if (curr.customComponent) {
 				const componentProps = {
 					key: itemKey,
 					onMouseDown: this.props.onLeafMouseDown,
 					onMouseUp: this.props.onLeafMouseUp,
 					onClick: this.props.onLeafMouseClick,
-					name: curr.get("name"),
-					icon: curr.get("icon"),
+					name: curr.name,
+					icon: curr.icon,
 					data: curr
 				};
-				prevs.push(React.createElement(curr.get("customComponent"), componentProps));
+				prevs.push(React.createElement(curr.customComponent, componentProps));
 			}
 			else {
 				prevs.push(
@@ -143,7 +147,7 @@ export default class ObjectsOptions extends React.Component {
 						onMouseUp={(e) => this.props.onLeafMouseUp ? this.props.onLeafMouseUp(e, curr) : null}
 						onClick={(e) => this.props.onLeafMouseClick ? this.props.onLeafMouseClick(e, curr) : null}
 						>
-						<span>{curr.get("name")}</span>
+						<span>{curr.name}</span>
 					</li>
 				);
 			}
@@ -151,76 +155,76 @@ export default class ObjectsOptions extends React.Component {
 		}
 		/*the node*/
 		else {
-			const key = "object-options-node-" + currLevel + "-" + curr.get("id");
-			const folderName = curr.get("name");
-			if (!curr.get("isOpen")) {
-				if (curr.get("customComponent")) {
-					const folderProps = {
-						onClick: this.onFolderClicked.bind(this, folderTree, curr, keyPath),
-						name: folderName,
-						isOpen: curr.get("isOpen"),
+			const key = "infinity-menu-node-" + currLevel + "-" + curr.id;
+			const nodeName = curr.name;
+			if (!curr.isOpen) {
+				if (curr.customComponent) {
+					const nodeProps = {
+						onClick: this.onNodeClick.bind(this, tree, curr, keyPath),
+						name: nodeName,
+						isOpen: curr.isOpen,
 						isSearching: false,
 						key
 					};
-					prevs.push(React.createElement(curr.get("customComponent"), folderProps));
+					prevs.push(React.createElement(curr.customComponent, nodeProps));
 				}
 				else {
 					prevs.push(
 						<div key={key}
-							onClick={this.onFolderClicked.bind(this, folderTree, curr, keyPath)}
+							onClick={this.onNodeClick.bind(this, tree, curr, keyPath)}
 							className="infinity-menu-node-container"
 						>
-							<label>{folderName}</label>
+							<label>{nodeName}</label>
 						</div>
 					);
 				}
 				return prevs;
 			}
 			else {
-				let openedFolder = [];
+				let openedNode = [];
 				const isSearching = this.state.search.isSearching && this.state.search.searchInput.length;
 
 				/*unname folder is not showing as parent*/
-				const isDefault = curr.get("name") === "";
+				const isDefault = curr.name === "";
 				if (!isDefault) {
-					if (curr.get("customComponent")) {
-						const folderProps = {
-							onClick: this.onFolderClicked.bind(this, folderTree, curr, keyPath),
-							name: folderName,
-							isOpen: curr.get("isOpen"),
+					if (curr.customComponent) {
+						const nodeProps = {
+							onClick: this.onNodeClick.bind(this, tree, curr, keyPath),
+							name: nodeName,
+							isOpen: curr.isOpen,
 							key,
 							isSearching
 						};
-						openedFolder.push(React.createElement(curr.get("customComponent"), folderProps));
+						openedNode.push(React.createElement(curr.customComponent, nodeProps));
 					}
 					else {
-						openedFolder.push(
+						openedNode.push(
 							<div key={key}
-								onClick={this.onFolderClicked.bind(this, folderTree, curr, keyPath)}
+								onClick={this.onNodeClick.bind(this, tree, curr, keyPath)}
 								className="infinity-menu-node-container"
 							>
-								<label>{folderName}</label>
+								<label>{nodeName}</label>
 							</div>
 						);
 					}
 				}
 
-				const floorElementsLIs = curr.get("children").size ? curr.get("children").reduce((p, c, k) => {
+				const childrenList = curr.children.length ? curr.children.reduce((p, c, k) => {
 					if (c === undefined || k === undefined) {
 						return p;
 					}
-					const newKeyPath = [].concat(keyPath).concat(["children", k]);
-					return this.setDisplayFolders(folderTree, p, c, newKeyPath);
+					return this.setDisplayFolders(tree, p, c, keyPath + ".children." + k);
 				}, []) : [];
 
-				if (floorElementsLIs.length > 0) {
-					openedFolder.push(
-						<ul key={"objects-folder-list" + currLevel}>
-							{floorElementsLIs}
+
+				if (childrenList.length > 0) {
+					openedNode.push(
+						<ul key={"infinity-menu-children-list" + currLevel}>
+							{childrenList}
 						</ul>
 					);
 				}
-				prevs.push(openedFolder);
+				prevs.push(openedNode);
 				return prevs;
 			}
 		}
@@ -230,21 +234,22 @@ export default class ObjectsOptions extends React.Component {
 	 *  @description React render method for creating objects menu drawer content
 	 */
 	render() {
-		const folderTree = fromJS(this.props.tree);
+		const tree = dcopy(this.props.tree);
+
 		/*find filtered folders base on search, if there no search, return all*/
-		const filteredFolders = this.state.search.isSearching && this.state.search.searchInput.length ? folderTree.reduce((folders, folder, key) => {
+		const filteredFolders = this.state.search.isSearching && this.state.search.searchInput.length ? tree.reduce((prev, curr, key) => {
 			if (key === undefined) {
-				return folders;
+				return prev;
 			}
-			return this.findFilted(folders, folder, key);
-		}, OrderedMap()) : folderTree;
+			return this.findFilted(prev, curr, key);
+		}, []) : tree;
 
 
-		const displayFolders = filteredFolders.reduce((folders, folder, key) => {
+		const displayFolders = filteredFolders.reduce((prev, curr, key) => {
 			if (key === undefined) {
-				return folders;
+				return prev;
 			}
-			return this.setDisplayFolders(folderTree, folders, folder, [key]);
+			return this.setDisplayFolders(tree, prev, curr, key.toString());
 		}, []);
 
 		const headerProps = {
