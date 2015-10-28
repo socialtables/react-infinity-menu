@@ -113,9 +113,11 @@ Here is the example data you could pass into the tree props.
 	}
 ];
 ```
-  * `customComponent` is a React component the user can pass in.
+* #### customComponent is a React component the user can pass in.
     * As the `customComponent` at the node level, you will receive props `key`,  `onClick`, `name`, `isOpen` and `isSearching`.
 	* As the `customComponent` at the leaf level, you will receive props `key`, `onMouseDown`, `onMouseUp`, `onClick`, `name`, `icon` and `data`.
+
+
 
 * #### onNodeMouseClick(function)[event, tree, node, level]
 This function will get call when user click on the folder(node).
