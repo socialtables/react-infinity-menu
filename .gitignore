@@ -10,3 +10,4 @@ pids
 *.seed
 
 node_modules
+example/compiled

@@ -213,9 +213,9 @@ export default class ObjectsOptions extends React.Component {
 					if (c === undefined || k === undefined) {
 						return p;
 					}
-					keyPath = keyPath + ".children." + k;
-					return this.setDisplayFolders(tree, p, c, keyPath);
+					return this.setDisplayFolders(tree, p, c, keyPath + ".children." + k);
 				}, []) : [];
+
 
 				if (childrenList.length > 0) {
 					openedNode.push(
