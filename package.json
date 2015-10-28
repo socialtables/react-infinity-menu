@@ -1,8 +1,8 @@
 {
-  "name": "@socialtables/menu-drawer-objects-options-subcomponent",
-  "version": "3.0.0",
+  "name": "@socialtables/react-infinity-menu",
+  "version": "1.0.0",
   "description": "",
-  "main": "./dist/objects-options.js",
+  "main": "./dist/infinity-menu.js",
   "scripts": {
     "test": "mocha --compilers js:babel/register --recursive",
     "build": "babel src -d dist",
@@ -12,13 +12,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/socialtables/menu-drawer-objects-options-subcomponent.git"
+    "url": "https://github.com/socialtables/react-infinity-menu.git"
   },
   "author": "Social Tables",
   "bugs": {
-    "url": "https://github.com/socialtables/menu-drawer-objects-options-subcomponent/issues"
+    "url": "https://github.com/socialtables/react-infinity-menu/issues"
   },
-  "homepage": "https://github.com/socialtables/menu-drawer-objects-options-subcomponent",
+  "homepage": "https://github.com/socialtables/react-infinity-menu",
   "dependencies": {
     "deep-copy": "^1.1.0",
     "nested-objects": "0.0.2"

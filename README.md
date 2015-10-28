@@ -1,4 +1,4 @@
-# menu-drawer-objects-options-subcomponent
+# react-infinity-menu
 
 [![Circle CI](https://circleci.com/gh/socialtables/menu-drawer-objects-options-subcomponent/tree/master.svg?style=svg&circle-token=230aaa396d006f1dc8d875b340834234c4937bbc)](https://circleci.com/gh/socialtables/menu-drawer-objects-options-subcomponent/tree/master)
 
@@ -8,14 +8,14 @@
 ![Awesome demo](/demo.gif)
 
 # Installation
-``` npm install menu-drawer-objects-options-subcomponent```
+``` npm install react-infinity-menu```
 
 
 # How to use
 
 ```js
-import ObjectsOptions from "@socialtables/menu-drawer-objects-options-subcomponent";
-import "@socialtables/menu-drawer-objects-options-subcomponent/src/objects-options.css";
+import InfinityMenu from "@socialtables/infinity-menu";
+import "@socialtables/infinity-menu/src/infinity-menu.css";
 
 class Example extends React.Component {
 	onNodeMouseClick(event, tree, node, level) {
@@ -41,7 +41,7 @@ class Example extends React.Component {
 
 	render() {
 		return (
-			<ObjectsOptions
+			<InfinityMenu
 				tree={this.state.tree}
 				onNodeMouseClick={this.onNodeMouseClick}
 				onLeafMouseClick={this.onLeafMouseClick}/*optional*/
@@ -57,7 +57,7 @@ class Example extends React.Component {
 # Properties
 
 
-* #### tree(Array)
+*  #### tree(Array)
 
 A tree to represent the folder structure.
 Here is the example data you could pass into the tree props.
@@ -154,4 +154,4 @@ This function will get call when use click the cross on the menu
 
 # Styles
 There is a default style sheet you can use if you so desire.
-`/src/objects-option.css`
+`/src/infinity-menu.css`

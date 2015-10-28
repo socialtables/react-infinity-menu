@@ -2,12 +2,11 @@ import React from "react";
 import NestedObjects from "nested-objects";
 import dcopy from "deep-copy";
 /*
- *  @class ObjectsOptions
- *  @description content of Objects section in menu drawer
+ *  @class InfinityMenu
  */
-export default class ObjectsOptions extends React.Component {
+export default class InfinityMenu extends React.Component {
 	/*
-	 *  @constructs ObjectsOptions
+	 *  @constructs InfinityMenu
 	 */
 	constructor(props) {
 		super(props);
@@ -231,7 +230,7 @@ export default class ObjectsOptions extends React.Component {
 	}
 	/*
 	 *  @function render
-	 *  @description React render method for creating objects menu drawer content
+	 *  @description React render method for creating infinity menu
 	 */
 	render() {
 		const tree = dcopy(this.props.tree);
@@ -271,7 +270,7 @@ export default class ObjectsOptions extends React.Component {
 	}
 }
 
-ObjectsOptions.propTypes = {
+InfinityMenu.propTypes = {
 	tree: React.PropTypes.array,
 	onNodeMouseClick: React.PropTypes.func,
 	onLeafMouseClick: React.PropTypes.func,
@@ -280,7 +279,7 @@ ObjectsOptions.propTypes = {
 	onClose: React.PropTypes.func
 };
 
-ObjectsOptions.defaultProps = {
+InfinityMenu.defaultProps = {
 	tree: [],
 	onNodeMouseClick: ()=>{},
 	onLeafMouseClick: ()=>{},

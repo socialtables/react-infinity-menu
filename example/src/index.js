@@ -1,6 +1,6 @@
 import React from "react";
-import "../../src/objects-options.css";
-import InfinityMenu from "../../src/objects-options";
+import "../../src/infinity-menu.css";
+import InfinityMenu from "../../src/infinity-menu";
 
 class App extends React.Component {
 

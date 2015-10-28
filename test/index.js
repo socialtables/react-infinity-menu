@@ -1,12 +1,12 @@
 import React from "react/addons";
 let TestUtils = React.addons.TestUtils;
 let shallowRenderer = TestUtils.createRenderer();
-import ObjectsOptions from "../dist/objects-options";
+import InfinityMenu from "../dist/infinity-menu";
 import assert from "assert";
 import sinon from "sinon";
 import "should-sinon";
 
-describe("Test for ObjectsOptions", function() {
+describe("Test for infinity menu", function() {
 
 	let component;
 	let dom;
@@ -71,7 +71,7 @@ describe("Test for ObjectsOptions", function() {
 		onLeafMouseUpStub = sinon.stub();
 		onLeafMouseDownStub = sinon.stub();
 		onCloseStub = sinon.stub();
-		component = <ObjectsOptions
+		component = <InfinityMenu
 			tree={tree}
 			onNodeMouseClick={onNodeMouseClickStub}
 			onLeafMouseClick={onLeafMouseClickStub}
