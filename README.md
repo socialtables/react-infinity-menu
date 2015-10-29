@@ -1,6 +1,6 @@
 # react-infinity-menu
 
-[![Circle CI](https://circleci.com/gh/socialtables/menu-drawer-objects-options-subcomponent/tree/master.svg?style=svg&circle-token=230aaa396d006f1dc8d875b340834234c4937bbc)](https://circleci.com/gh/socialtables/menu-drawer-objects-options-subcomponent/tree/master)
+[![Circle CI](https://circleci.com/gh/socialtables/react-infinity-menu.svg?style=svg&circle-token=230aaa396d006f1dc8d875b340834234c4937bbc)](https://circleci.com/gh/socialtables/react-infinity-menu)
 
 * An unlimited deep side menu
 
@@ -14,8 +14,8 @@
 # How to use
 
 ```js
-import InfinityMenu from "@socialtables/infinity-menu";
-import "@socialtables/infinity-menu/src/infinity-menu.css";
+import InfinityMenu from "infinity-menu";
+import "infinity-menu/src/infinity-menu.css";
 
 class Example extends React.Component {
 	onNodeMouseClick(event, tree, node, level) {
@@ -57,7 +57,7 @@ class Example extends React.Component {
 # Properties
 
 
-*  #### tree(Array)
+#### tree(Array)
 
 A tree to represent the folder structure.
 Here is the example data you could pass into the tree props.
@@ -113,13 +113,13 @@ Here is the example data you could pass into the tree props.
 	}
 ];
 ```
-* #### customComponent is a React component the user can pass in.
-    * As the `customComponent` at the node level, you will receive props `key`,  `onClick`, `name`, `isOpen` and `isSearching`.
-	* As the `customComponent` at the leaf level, you will receive props `key`, `onMouseDown`, `onMouseUp`, `onClick`, `name`, `icon` and `data`.
+#### customComponent is a React component the user can pass in.
+  * As the `customComponent` at the node level, you will receive props `key`,  `onClick`, `name`, `isOpen` and `isSearching`.
+  * As the `customComponent` at the leaf level, you will receive props `key`, `onMouseDown`, `onMouseUp`, `onClick`, `name`, `icon` and `data`.
 
 
 
-* #### onNodeMouseClick(function)[event, tree, node, level]
+#### onNodeMouseClick(function)[event, tree, node, level]
 This function will get call when user click on the folder(node).
 The function arguments include ```event```, ```tree```, ```node``` and ```level```.
 ```event``` is the mouse click event.
@@ -128,7 +128,7 @@ The function arguments include ```event```, ```tree```, ```node``` and ```level`
 ```level``` is the distance from the root.
 
 
-* #### onLeafMouseClick(function)[event, leaf]
+#### onLeafMouseClick(function)[event, leaf]
 Bind to the onClick on the leaf.
 This function will get call when user click on the item(leaf).
 The function arguments include ```event```, ```leaf```.
@@ -136,7 +136,7 @@ The function arguments include ```event```, ```leaf```.
 ```leaf``` is the item user clicked on. Includes name, id and all data the user inputs when they pass in the tree.
 
 
-* #### onLeafMouseDown(function)[event, leaf]
+#### onLeafMouseDown(function)[event, leaf]
 Bind to the onMouseDown on the leaf.
 This function will get call when user mouse down on the item(leaf).
 The function arguments include ```event```, ```leaf```.
@@ -144,14 +144,14 @@ The function arguments include ```event```, ```leaf```.
 ```leaf``` is the item user clicked on. Includes name, id and all data the user inputs when they pass in the tree.
 
 
-* #### onLeafMouseUp(function)[event, leaf]
+#### onLeafMouseUp(function)[event, leaf]
 Bind to the onMouseUp on the leaf.
 This function will get call when user mouse up on the item(leaf).
 The function arguments include ```event```, ```leaf```.
 ```event``` is the click event.
 ```leaf``` is the item user clicked on. Includes name, id and all data the user inputs when they pass in the tree.
 
-* #### onClose(function)
+#### onClose(function)
 This function will get call when use click the cross on the menu
 
 # Styles
