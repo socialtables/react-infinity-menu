@@ -121,7 +121,16 @@ export default class InfinityMenu extends React.Component {
 		}
 	}
 
-	setDisplayFolders(tree, prevs, curr, keyPath) {
+	/*
+	 *	@function setDisplayTree
+	 *	@description recursive go through the tree and set the render tree
+	 *
+	 *	@param {array} tree - whole tree
+	 *	@param {array} prevs - the whole rendering array
+	 *	@param {object} curr - current node/leaf
+	 *	@param {string} keyPath - the path to current node/leaf, e.g.  "0.children.1"
+	 */
+	setDisplayTree(tree, prevs, curr, keyPath) {
 		const currLevel = Math.floor(keyPath.length / 2);
 		/*the leaves*/
 		if (!curr.children) {
@@ -163,6 +172,7 @@ export default class InfinityMenu extends React.Component {
 						name: nodeName,
 						isOpen: curr.isOpen,
 						isSearching: false,
+						data: curr,
 						key
 					};
 					prevs.push(React.createElement(curr.customComponent, nodeProps));
@@ -183,36 +193,33 @@ export default class InfinityMenu extends React.Component {
 				let openedNode = [];
 				const isSearching = this.state.search.isSearching && this.state.search.searchInput.length;
 
-				/*unname folder is not showing as parent*/
-				const isDefault = curr.name === "";
-				if (!isDefault) {
-					if (curr.customComponent) {
-						const nodeProps = {
-							onClick: this.onNodeClick.bind(this, tree, curr, keyPath),
-							name: nodeName,
-							isOpen: curr.isOpen,
-							key,
-							isSearching
-						};
-						openedNode.push(React.createElement(curr.customComponent, nodeProps));
-					}
-					else {
-						openedNode.push(
-							<div key={key}
-								onClick={this.onNodeClick.bind(this, tree, curr, keyPath)}
-								className="infinity-menu-node-container"
-							>
-								<label>{nodeName}</label>
-							</div>
-						);
-					}
+				if (curr.customComponent) {
+					const nodeProps = {
+						onClick: this.onNodeClick.bind(this, tree, curr, keyPath),
+						name: nodeName,
+						isOpen: curr.isOpen,
+						data: curr,
+						key,
+						isSearching
+					};
+					openedNode.push(React.createElement(curr.customComponent, nodeProps));
+				}
+				else {
+					openedNode.push(
+						<div key={key}
+							onClick={this.onNodeClick.bind(this, tree, curr, keyPath)}
+							className="infinity-menu-node-container"
+						>
+							<label>{nodeName}</label>
+						</div>
+					);
 				}
 
 				const childrenList = curr.children.length ? curr.children.reduce((p, c, k) => {
 					if (c === undefined || k === undefined) {
 						return p;
 					}
-					return this.setDisplayFolders(tree, p, c, keyPath + ".children." + k);
+					return this.setDisplayTree(tree, p, c, keyPath + ".children." + k);
 				}, []) : [];
 
 
@@ -236,7 +243,7 @@ export default class InfinityMenu extends React.Component {
 		const tree = dcopy(this.props.tree);
 
 		/*find filtered folders base on search, if there no search, return all*/
-		const filteredFolders = this.state.search.isSearching && this.state.search.searchInput.length ? tree.reduce((prev, curr, key) => {
+		const filteredTree = this.state.search.isSearching && this.state.search.searchInput.length ? tree.reduce((prev, curr, key) => {
 			if (key === undefined) {
 				return prev;
 			}
@@ -244,13 +251,15 @@ export default class InfinityMenu extends React.Component {
 		}, []) : tree;
 
 
-		const displayFolders = filteredFolders.reduce((prev, curr, key) => {
+		/*recursive go through the tree*/
+		const displayTree = filteredTree.reduce((prev, curr, key) => {
 			if (key === undefined) {
 				return prev;
 			}
-			return this.setDisplayFolders(tree, prev, curr, key.toString());
+			return this.setDisplayTree(tree, prev, curr, key.toString());
 		}, []);
 
+		/*header component*/
 		const headerProps = {
 			isSearching: this.state.search.isSearching,
 			searchInput: this.state.search.searchInput,
@@ -264,7 +273,7 @@ export default class InfinityMenu extends React.Component {
 		return (
 			<div className="infinity-menu-container">
 				{headerContent}
-				{displayFolders}
+				{displayTree}
 			</div>
 		);
 	}

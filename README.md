@@ -64,9 +64,9 @@ Here is the example data you could pass into the tree props.
 ```
 [
 	{
-		name: "menu1",
-		id: 1,
-		isOpen: true,
+		name: "menu1", /*require*/
+		id: 1, /*require*/
+		isOpen: true, /*require*/
 		customComponent: YOUR_OWN_COMPONENT_FOR_MENU,
 		children: [
 			{
@@ -100,10 +100,10 @@ Here is the example data you could pass into the tree props.
 		]
 	},
 	{
-		name: "menu2",
-		id: 2,
+		name: "menu2", /*require*/
+		id: 2, /*require*/
+		isOpen: true, /*require*/
 		customComponent: YOUR_OWN_COMPONENT_FOR_MENU,
-		isOpen: true,
 		children: [
 			{
 				name: "item3-1",
