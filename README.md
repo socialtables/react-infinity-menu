@@ -14,8 +14,8 @@
 # How to use
 
 ```js
-import InfinityMenu from "infinity-menu";
-import "infinity-menu/src/infinity-menu.css";
+import InfinityMenu from "react-infinity-menu";
+import "react-infinity-menu/src/infinity-menu.css";
 
 class Example extends React.Component {
 	onNodeMouseClick(event, tree, node, level) {
