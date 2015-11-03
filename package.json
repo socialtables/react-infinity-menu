@@ -1,6 +1,6 @@
 {
   "name": "react-infinity-menu",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "[![Circle CI](https://circleci.com/gh/socialtables/react-infinity-menu.svg?style=svg&circle-token=230aaa396d006f1dc8d875b340834234c4937bbc)](https://circleci.com/gh/socialtables/react-infinity-menu)",
   "main": "./dist/infinity-menu.js",
   "scripts": {
