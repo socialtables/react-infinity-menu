@@ -3,6 +3,7 @@
 [![Circle CI](https://circleci.com/gh/socialtables/react-infinity-menu.svg?style=svg&circle-token=230aaa396d006f1dc8d875b340834234c4937bbc)](https://circleci.com/gh/socialtables/react-infinity-menu)
 
 * An unlimited deep side menu
+* [Live Demo](http://socialtables.github.io/react-infinity-menu/)
 
 # Demo
 ![Awesome demo](/demo.gif)
@@ -114,7 +115,7 @@ Here is the example data you could pass into the tree props.
 ];
 ```
 #### customComponent is a React component the user can pass in.
-  * As the `customComponent` at the node level, you will receive props `key`,  `onClick`, `name`, `isOpen` and `isSearching`.
+  * As the `customComponent` at the node level, you will receive props `key`,  `onClick`, `name`, `isOpen`, `data` and `isSearching`.
   * As the `customComponent` at the leaf level, you will receive props `key`, `onMouseDown`, `onMouseUp`, `onClick`, `name`, `icon` and `data`.
 
 
