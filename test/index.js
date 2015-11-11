@@ -82,6 +82,25 @@ describe("Test for infinity menu", function() {
 		dom = TestUtils.renderIntoDocument(component);
 	});
 
+	it("should render correctly pass headerProps to the headerContent", function () {
+		class Doge extends React.Component{
+			render() {
+				return (
+					<div>{this.props.breed}</div>
+				);
+			}
+		}
+
+		component = <InfinityMenu
+			headerProps={{breed: "shiba"}}
+			headerContent={Doge}
+			/>;
+		shallowRenderer.render(component);
+		const result = shallowRenderer.getRenderOutput();
+		assert.equal(result.props.children[0].props.breed, "shiba");
+	});
+
+
 	it("should render correctly with folder tree", function () {
 		shallowRenderer.render(component);
 		var result = shallowRenderer.getRenderOutput();
