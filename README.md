@@ -115,7 +115,11 @@ Here is the example data you could pass into the tree props.
 ];
 ```
 
-#### headerProps are additional props for headerContent
+#### headerContent(component) subcomponent rendered above the tree
+
+`headerContent` is passed in to `InfinityMenu`. It is rendered above the tree subcomponent.
+
+#### headerProps(object) additional props for headerContent
 
 `headerProps` is an optional prop of InfinityMenu. The props in this object are passed as props to a `headerContent` component. This is useful when extending InfinityMenu.
 
