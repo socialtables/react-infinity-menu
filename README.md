@@ -114,6 +114,22 @@ Here is the example data you could pass into the tree props.
 	}
 ];
 ```
+
+#### headerContent(component) subcomponent rendered above the tree
+
+`headerContent` is passed in to `InfinityMenu`. It is rendered above the tree subcomponent.
+
+#### headerProps(object) additional props for headerContent
+
+`headerProps` is an optional prop of InfinityMenu. The props in this object are passed as props to a `headerContent` component. This is useful when extending InfinityMenu.
+
+Passing the following into InfinityMenu as the `headerProps` prop sets the `title` prop on the headerContent component.
+```
+{
+	title: "my great title"
+}
+```
+
 #### customComponent is a React component the user can pass in.
   * As the `customComponent` at the node level, you will receive props `key`,  `onClick`, `name`, `isOpen`, `data` and `isSearching`.
   * As the `customComponent` at the leaf level, you will receive props `key`, `onMouseDown`, `onMouseUp`, `onClick`, `name`, `icon` and `data`.
