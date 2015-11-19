@@ -266,7 +266,6 @@ export default class InfinityMenu extends React.Component {
 			setSearchInput: this.setSearchInput,
 			stopSearching: this.stopSearching,
 			startSearching: this.startSearching,
-			onClose: this.props.onClose,
 				...this.props.headerProps
 		};
 		const headerContent = this.props.headerContent ? React.createElement(this.props.headerContent, headerProps) : null;
@@ -286,8 +285,7 @@ InfinityMenu.propTypes = {
 	onNodeMouseClick: React.PropTypes.func,
 	onLeafMouseClick: React.PropTypes.func,
 	onLeafMouseDown: React.PropTypes.func,
-	onLeafMouseUp: React.PropTypes.func,
-	onClose: React.PropTypes.func
+	onLeafMouseUp: React.PropTypes.func
 };
 
 InfinityMenu.defaultProps = {
@@ -296,6 +294,5 @@ InfinityMenu.defaultProps = {
 	onNodeMouseClick: ()=>{},
 	onLeafMouseClick: ()=>{},
 	onLeafMouseDown: ()=>{},
-	onLeafMouseUp: ()=>{},
-	onClose: ()=>{}
+	onLeafMouseUp: ()=>{}
 };

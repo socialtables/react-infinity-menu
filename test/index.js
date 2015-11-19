@@ -10,7 +10,7 @@ describe("Test for infinity menu", function() {
 
 	let component;
 	let dom;
-	let onNodeMouseClickStub, onLeafMouseClickStub, onLeafMouseDownStub, onLeafMouseUpStub, onCloseStub;
+	let onNodeMouseClickStub, onLeafMouseClickStub, onLeafMouseDownStub, onLeafMouseUpStub;
 	class TestCustomComponent extends React.Component {
 		render() {
 			return (<div className="test-custom-component"/>);
@@ -70,14 +70,12 @@ describe("Test for infinity menu", function() {
 		onLeafMouseClickStub = sinon.stub();
 		onLeafMouseUpStub = sinon.stub();
 		onLeafMouseDownStub = sinon.stub();
-		onCloseStub = sinon.stub();
 		component = <InfinityMenu
 			tree={tree}
 			onNodeMouseClick={onNodeMouseClickStub}
 			onLeafMouseClick={onLeafMouseClickStub}
 			onLeafMouseUp={onLeafMouseUpStub}
 			onLeafMouseDown={onLeafMouseDownStub}
-			onClose={onCloseStub}
 			/>;
 		dom = TestUtils.renderIntoDocument(component);
 	});
