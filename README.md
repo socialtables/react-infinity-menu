@@ -168,9 +168,6 @@ The function arguments include ```event```, ```leaf```.
 ```event``` is the click event.
 ```leaf``` is the item user clicked on. Includes name, id and all data the user inputs when they pass in the tree.
 
-#### onClose(function)
-This function will get call when use click the cross on the menu
-
 # Styles
 There is a default style sheet you can use if you so desire.
 `/src/infinity-menu.css`
