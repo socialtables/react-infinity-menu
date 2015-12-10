@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOM from "react-dom";
 import "../../src/infinity-menu.css";
 import InfinityMenu from "../../src/infinity-menu";
 
@@ -97,4 +98,4 @@ class App extends React.Component {
 		);
 	}
 }
-React.render(<App />, document.getElementById("example"));
+ReactDOM.render(<App />, document.getElementById("example"));

@@ -1,5 +1,6 @@
-import React from "react/addons";
-let TestUtils = React.addons.TestUtils;
+import React from "react";
+import ReactDOM from "react-dom";
+import TestUtils from "react-addons-test-utils";
 let shallowRenderer = TestUtils.createRenderer();
 import InfinityMenu from "../dist/infinity-menu";
 import assert from "assert";
@@ -107,7 +108,7 @@ describe("Test for infinity menu", function() {
 
 
 	it("should call onNodeMouseClick function", function () {
-		var folderNode = React.findDOMNode(
+		var folderNode = ReactDOM.findDOMNode(
 			TestUtils.scryRenderedDOMComponentsWithClass(
 				dom,
 				"infinity-menu-node-container"
@@ -115,11 +116,13 @@ describe("Test for infinity menu", function() {
 		);
 		onNodeMouseClickStub.should.have.callCount(0);
 		TestUtils.Simulate.click(folderNode);
+		/*the fourth argument is the level of current node*/
+		onNodeMouseClickStub.args[0][3].should.equal(1);
 		onNodeMouseClickStub.should.have.callCount(1);
 	});
 
 	it("should call onLeafMouseClick function", function () {
-		var leaf = React.findDOMNode(
+		var leaf = ReactDOM.findDOMNode(
 			TestUtils.scryRenderedDOMComponentsWithClass(
 				dom,
 				"infinity-menu-leaf-container"
@@ -131,7 +134,7 @@ describe("Test for infinity menu", function() {
 	});
 
 	it("should call onLeafMouseDown function", function () {
-		var leaf = React.findDOMNode(
+		var leaf = ReactDOM.findDOMNode(
 			TestUtils.scryRenderedDOMComponentsWithClass(
 				dom,
 				"infinity-menu-leaf-container"
@@ -143,7 +146,7 @@ describe("Test for infinity menu", function() {
 	});
 
 	it("should call onLeafMouseUp function", function () {
-		var leaf = React.findDOMNode(
+		var leaf = ReactDOM.findDOMNode(
 			TestUtils.scryRenderedDOMComponentsWithClass(
 				dom,
 				"infinity-menu-leaf-container"
