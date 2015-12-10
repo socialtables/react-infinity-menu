@@ -32,7 +32,7 @@ export default class InfinityMenu extends React.Component {
 			node.isOpen = !node.isOpen;
 			NestedObjects.set(tree, keyPath, node);
 			if (this.props.onNodeMouseClick) {
-				const currLevel = Math.floor(keyPath.length / 2);
+				const currLevel = Math.floor(keyPath.split(".").length / 2);
 				this.props.onNodeMouseClick(event, tree, node, currLevel);
 			}
 		}
