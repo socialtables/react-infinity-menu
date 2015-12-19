@@ -273,7 +273,9 @@ export default class InfinityMenu extends React.Component {
 		return (
 			<div className="infinity-menu-container">
 				{headerContent}
-				{displayTree}
+				<div className="infinity-menu-display-tree-container">
+					{displayTree}
+				</div>
 			</div>
 		);
 	}
