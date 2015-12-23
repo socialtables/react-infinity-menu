@@ -2,30 +2,21 @@ import React from "react";
 import ReactDOM from "react-dom";
 import TestUtils from "react-addons-test-utils";
 let shallowRenderer = TestUtils.createRenderer();
-import InfinityMenu from "../dist/infinity-menu";
-import assert from "assert";
+import InfinityMenu from "../src/infinity-menu";
 import sinon from "sinon";
 import "should-sinon";
 
-describe("Test for infinity menu", function() {
-
+describe("Leaf/Node Mouse Handlers", function() {
 	let component;
 	let dom;
 	let onNodeMouseClickStub, onLeafMouseClickStub, onLeafMouseDownStub, onLeafMouseUpStub;
-	class TestCustomComponent extends React.Component {
-		render() {
-			return (<div className="test-custom-component"/>);
-		}
-	}
 
 	before(function() {
-		const tree =
-		[
+		const tree = [
 			{
 				name: "menu1",
 				id: 1,
 				isOpen: true,
-				customComponent: TestCustomComponent,
 				children: [
 					{
 						name: "submenu1",
@@ -81,31 +72,9 @@ describe("Test for infinity menu", function() {
 		dom = TestUtils.renderIntoDocument(component);
 	});
 
-	it("should render correctly pass headerProps to the headerContent", function () {
-		class Doge extends React.Component{
-			render() {
-				return (
-					<div>{this.props.breed}</div>
-				);
-			}
-		}
-
-		component = <InfinityMenu
-			headerProps={{breed: "shiba"}}
-			headerContent={Doge}
-			/>;
-		shallowRenderer.render(component);
-		const result = shallowRenderer.getRenderOutput();
-		assert.equal(result.props.children[0].props.breed, "shiba");
+	after(function() {
+		ReactDOM.unmountComponentAtNode(ReactDOM.findDOMNode(dom).parentNode);
 	});
-
-
-	it("should render correctly with folder tree", function () {
-		shallowRenderer.render(component);
-		var result = shallowRenderer.getRenderOutput();
-		assert.equal(result.props.className, "infinity-menu-container");
-	});
-
 
 	it("should call onNodeMouseClick function", function () {
 		var folderNode = ReactDOM.findDOMNode(
@@ -116,8 +85,6 @@ describe("Test for infinity menu", function() {
 		);
 		onNodeMouseClickStub.should.have.callCount(0);
 		TestUtils.Simulate.click(folderNode);
-		/*the fourth argument is the level of current node*/
-		onNodeMouseClickStub.args[0][3].should.equal(1);
 		onNodeMouseClickStub.should.have.callCount(1);
 	});
 
@@ -157,12 +124,4 @@ describe("Test for infinity menu", function() {
 		onLeafMouseUpStub.should.have.callCount(1);
 	});
 
-	it("should have test-custom-component", function () {
-		assert.doesNotThrow(() => {
-			TestUtils.findRenderedDOMComponentWithClass(
-				dom,
-				"test-custom-component"
-			);
-		});
-	});
 });

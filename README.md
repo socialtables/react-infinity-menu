@@ -62,7 +62,7 @@ class Example extends React.Component {
 
 A tree to represent the folder structure.
 Here is the example data you could pass into the tree props.
-```
+```js
 [
 	{
 		name: "menu1", /*require*/
@@ -115,58 +115,88 @@ Here is the example data you could pass into the tree props.
 ];
 ```
 
-#### headerContent(component) subcomponent rendered above the tree
+#### headerContent(React Component)
+Subcomponent rendered above the tree.
 
 `headerContent` is passed in to `InfinityMenu`. It is rendered above the tree subcomponent.
 
-#### headerProps(object) additional props for headerContent
+#### headerProps(object)
+Additional props for headerContent.
 
-`headerProps` is an optional prop of InfinityMenu. The props in this object are passed as props to a `headerContent` component. This is useful when extending InfinityMenu.
+* `headerProps` is an optional prop of InfinityMenu. The props in this object are passed as props to a `headerContent` component. This is useful when extending InfinityMenu.
 
 Passing the following into InfinityMenu as the `headerProps` prop sets the `title` prop on the headerContent component.
-```
+```js
 {
 	title: "my great title"
 }
 ```
 
-#### customComponent is a React component the user can pass in.
+#### customComponent(React Component)
+A custom React component the user can pass in.
   * As the `customComponent` at the node level, you will receive props `key`,  `onClick`, `name`, `isOpen`, `data` and `isSearching`.
   * As the `customComponent` at the leaf level, you will receive props `key`, `onMouseDown`, `onMouseUp`, `onClick`, `name`, `icon` and `data`.
 
+
+#### filter(function)[node, searchInput]
+By default, when the menu is in searching mode, it will filter all nodes by whether their `name` is equal to the current `searchInput`. If the node `name` is equal to the `searchInput`, then the node will pass the filter and be displayed in tree (if it fails the filter, it will not be displayed in the tree).
+
+This allows the user to specify their own filtering criteria. When the menu is in search mode, every node will be run against the `filter()` function:
+* If the function returns `true`, the node will pass the filter, and be displayed in the tree.
+* If the function returns `false`, the node will fail the filter, and __will not__ be displayed in the tree.
+
+The function takes the following arguments:
+* ```node (object)``` is the folder(node) the user clicked on. Includes the following properties: `id`, `name`, `isOpen` and `children`.
+* ```searchInput (string)``` The current search term
+
+#### emptyTreeComponent (React Component)
+If the `tree` prop is an empty array or if the menu is in searching mode and no nodes match the filter, then the tree is considered "empty".
+
+By default, nothing will be displayed in an empty tree.
+
+However, if this prop is passed in, the specified component will be rendered when the tree is empty.
+
+This allows you have a very customized "empty tree" message/image.
+
+#### emptyTreeComponentProps (object)
+Allows you to specify props to pass to the `emptyTreeComponent`.
+
+By default, this is an empty object.
 
 
 #### onNodeMouseClick(function)[event, tree, node, level]
 This function will get call when user click on the folder(node).
 The function arguments include ```event```, ```tree```, ```node``` and ```level```.
-```event``` is the mouse click event.
-```tree``` is the updated tree, you should update your own tree accordingly.
-```node``` is the folder(node) the user clicked on. Including the id, name, isOpen and children.
-```level``` is the distance from the root.
+* ```event``` is the mouse click event.
+* ```tree``` is the updated tree, you should update your own tree accordingly.
+* ```node``` is the folder(node) the user clicked on. Including the id, name, isOpen and children.
+* ```level``` is the distance from the root.
 
 
 #### onLeafMouseClick(function)[event, leaf]
 Bind to the onClick on the leaf.
 This function will get call when user click on the item(leaf).
 The function arguments include ```event```, ```leaf```.
-```event``` is the click event.
-```leaf``` is the item user clicked on. Includes name, id and all data the user inputs when they pass in the tree.
+* ```event``` is the click event.
+* ```leaf``` is the item user clicked on. Includes name, id and all data the user inputs when they pass in the tree.
 
 
 #### onLeafMouseDown(function)[event, leaf]
 Bind to the onMouseDown on the leaf.
 This function will get call when user mouse down on the item(leaf).
 The function arguments include ```event```, ```leaf```.
-```event``` is the click event.
-```leaf``` is the item user clicked on. Includes name, id and all data the user inputs when they pass in the tree.
+* ```event``` is the click event.
+* ```leaf``` is the item user clicked on. Includes name, id and all data the user inputs when they pass in the tree.
 
 
 #### onLeafMouseUp(function)[event, leaf]
 Bind to the onMouseUp on the leaf.
 This function will get call when user mouse up on the item(leaf).
 The function arguments include ```event```, ```leaf```.
-```event``` is the click event.
-```leaf``` is the item user clicked on. Includes name, id and all data the user inputs when they pass in the tree.
+* ```event``` is the click event.
+* ```leaf``` is the item user clicked on. Includes name, id and all data the user inputs when they pass in the tree.
+
+
 
 # Styles
 There is a default style sheet you can use if you so desire.
