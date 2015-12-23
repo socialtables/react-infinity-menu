@@ -97,7 +97,8 @@ export default class InfinityMenu extends React.Component {
 
 	findFilted(trees, node, key) {
 		if (!node.children) {
-			if (node.name.toLowerCase().includes(this.state.search.searchInput.toLowerCase())) {
+			const nodeMatchesSearchFilter = this.props.filter(node, this.state.search.searchInput);
+			if (nodeMatchesSearchFilter) {
 				trees[key] = node;
 				return trees;
 			}
@@ -236,6 +237,27 @@ export default class InfinityMenu extends React.Component {
 		}
 	}
 	/*
+	 *  @function _renderBody
+	 *  @description Renders the body content
+	 */
+	renderBody(displayTree) {
+		const {
+			emptyTreeComponent,
+			emptyTreeComponentProps
+		} = this.props;
+
+		if (displayTree.length) {
+			return displayTree;
+		}
+		else if (emptyTreeComponent) {
+			const emptyTreeElement = React.createElement(emptyTreeComponent, emptyTreeComponentProps);
+			return emptyTreeElement;
+		}
+		else {
+			return null;
+		}
+	}
+	/*
 	 *  @function render
 	 *  @description React render method for creating infinity menu
 	 */
@@ -266,15 +288,17 @@ export default class InfinityMenu extends React.Component {
 			setSearchInput: this.setSearchInput,
 			stopSearching: this.stopSearching,
 			startSearching: this.startSearching,
-				...this.props.headerProps
+			...this.props.headerProps
 		};
+
+		const bodyContent = this.renderBody(displayTree);
 		const headerContent = this.props.headerContent ? React.createElement(this.props.headerContent, headerProps) : null;
 
 		return (
 			<div className="infinity-menu-container">
 				{headerContent}
 				<div className="infinity-menu-display-tree-container">
-					{displayTree}
+					{bodyContent}
 				</div>
 			</div>
 		);
@@ -283,7 +307,11 @@ export default class InfinityMenu extends React.Component {
 
 InfinityMenu.propTypes = {
 	tree: React.PropTypes.array,
+	headerContent: React.PropTypes.any,
 	headerProps: React.PropTypes.object,
+	emptyTreeComponent: React.PropTypes.any,
+	emptyTreeComponentProps: React.PropTypes.object,
+	filter: React.PropTypes.func,
 	onNodeMouseClick: React.PropTypes.func,
 	onLeafMouseClick: React.PropTypes.func,
 	onLeafMouseDown: React.PropTypes.func,
@@ -292,7 +320,11 @@ InfinityMenu.propTypes = {
 
 InfinityMenu.defaultProps = {
 	tree: [],
+	headerContent: null,
 	headerProps: {},
+	emptyTreeComponent: null,
+	emptyTreeComponentProps: {},
+	filter: (node, searchInput) => { node.name.toLowerCase().includes(searchInput.toLowerCase()) },
 	onNodeMouseClick: ()=>{},
 	onLeafMouseClick: ()=>{},
 	onLeafMouseDown: ()=>{},
