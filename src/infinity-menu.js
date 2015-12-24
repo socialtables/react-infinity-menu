@@ -192,7 +192,7 @@ export default class InfinityMenu extends React.Component {
 			}
 			else {
 				let openedNode = [];
-				const isSearching = this.state.search.isSearching && this.state.search.searchInput.length;
+				const isSearching = this.state.search.isSearching && this.state.search.searchInput;
 
 				if (curr.customComponent) {
 					const nodeProps = {
@@ -265,7 +265,7 @@ export default class InfinityMenu extends React.Component {
 		const tree = dcopy(this.props.tree);
 
 		/*find filtered folders base on search, if there no search, return all*/
-		const filteredTree = this.state.search.isSearching && this.state.search.searchInput.length ? tree.reduce((prev, curr, key) => {
+		const filteredTree = this.state.search.isSearching && this.state.search.searchInput ? tree.reduce((prev, curr, key) => {
 			if (key === undefined) {
 				return prev;
 			}
