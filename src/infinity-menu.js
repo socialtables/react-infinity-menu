@@ -33,7 +33,7 @@ export default class InfinityMenu extends React.Component {
 			NestedObjects.set(tree, keyPath, node);
 			if (this.props.onNodeMouseClick) {
 				const currLevel = Math.floor(keyPath.split(".").length / 2);
-				this.props.onNodeMouseClick(event, tree, node, currLevel);
+				this.props.onNodeMouseClick(event, tree, node, currLevel, keyPath);
 			}
 		}
 	}
@@ -136,6 +136,7 @@ export default class InfinityMenu extends React.Component {
 		/*the leaves*/
 		if (!curr.children) {
 			const itemKey = "infinity-menu-leaf-" + curr.id;
+			curr.keyPath = keyPath;
 			if (curr.customComponent) {
 				const componentProps = {
 					key: itemKey,
