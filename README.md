@@ -19,7 +19,7 @@ import InfinityMenu from "react-infinity-menu";
 import "react-infinity-menu/src/infinity-menu.css";
 
 class Example extends React.Component {
-	onNodeMouseClick(event, tree, node, level) {
+	onNodeMouseClick(event, tree, node, level, keyPath) {
 		this.setState({
 			tree: tree
 		});
@@ -164,13 +164,14 @@ Allows you to specify props to pass to the `emptyTreeComponent`.
 By default, this is an empty object.
 
 
-#### onNodeMouseClick(function)[event, tree, node, level]
+#### onNodeMouseClick(function)[event, tree, node, level, keyPath]
 This function will get call when user click on the folder(node).
 The function arguments include ```event```, ```tree```, ```node``` and ```level```.
 * ```event``` is the mouse click event.
 * ```tree``` is the updated tree, you should update your own tree accordingly.
 * ```node``` is the folder(node) the user clicked on. Including the id, name, isOpen and children.
 * ```level``` is the distance from the root.
+* ```keyPath``` is the path from root to current node
 
 
 #### onLeafMouseClick(function)[event, leaf]
@@ -178,7 +179,7 @@ Bind to the onClick on the leaf.
 This function will get call when user click on the item(leaf).
 The function arguments include ```event```, ```leaf```.
 * ```event``` is the click event.
-* ```leaf``` is the item user clicked on. Includes name, id and all data the user inputs when they pass in the tree.
+* ```leaf``` is the item user clicked on. Includes name, id, keyPath and all data the user inputs when they pass in the tree.
 
 
 #### onLeafMouseDown(function)[event, leaf]
@@ -186,7 +187,7 @@ Bind to the onMouseDown on the leaf.
 This function will get call when user mouse down on the item(leaf).
 The function arguments include ```event```, ```leaf```.
 * ```event``` is the click event.
-* ```leaf``` is the item user clicked on. Includes name, id and all data the user inputs when they pass in the tree.
+* ```leaf``` is the item user clicked on. Includes name, id, keyPath and all data the user inputs when they pass in the tree.
 
 
 #### onLeafMouseUp(function)[event, leaf]
@@ -194,7 +195,7 @@ Bind to the onMouseUp on the leaf.
 This function will get call when user mouse up on the item(leaf).
 The function arguments include ```event```, ```leaf```.
 * ```event``` is the click event.
-* ```leaf``` is the item user clicked on. Includes name, id and all data the user inputs when they pass in the tree.
+* ```leaf``` is the item user clicked on. Includes name, id, keyPath and all data the user inputs when they pass in the tree.
 
 
 
