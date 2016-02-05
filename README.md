@@ -137,6 +137,18 @@ A custom React component the user can pass in.
   * As the `customComponent` at the node level, you will receive props `key`,  `onClick`, `name`, `isOpen`, `data` and `isSearching`.
   * As the `customComponent` at the leaf level, you will receive props `key`, `onMouseDown`, `onMouseUp`, `onClick`, `name`, `icon` and `data`.
 
+	Example of `customComponent`
+	```js
+	class Node extends React.Component {
+	    render() {
+	        return (
+	            <div key={this.props.key} onClick={this.props.onClick}>
+	                <label>{this.props.name}</label>
+	            </div>
+	        );
+	    }
+	}
+	```
 
 #### filter(function)[node, searchInput]
 By default, when the menu is in searching mode, it will filter all nodes by whether their `name` is equal to the current `searchInput`. If the node `name` is equal to the `searchInput`, then the node will pass the filter and be displayed in tree (if it fails the filter, it will not be displayed in the tree).
