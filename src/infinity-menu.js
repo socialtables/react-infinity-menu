@@ -325,7 +325,7 @@ InfinityMenu.defaultProps = {
 	headerProps: {},
 	emptyTreeComponent: null,
 	emptyTreeComponentProps: {},
-	filter: (node, searchInput) => { node.name.toLowerCase().includes(searchInput.toLowerCase()) },
+	filter: (node, searchInput) => node.name.toLowerCase().includes(searchInput.toLowerCase()),
 	onNodeMouseClick: ()=>{},
 	onLeafMouseClick: ()=>{},
 	onLeafMouseDown: ()=>{},
