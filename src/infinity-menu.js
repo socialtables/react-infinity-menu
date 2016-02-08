@@ -133,7 +133,7 @@ export default class InfinityMenu extends React.Component {
 	 */
 	setDisplayTree(tree, prevs, curr, keyPath) {
 		const currLevel = Math.floor(keyPath.length / 2);
-    const currCustomComponent = typeof curr.customComponent === 'string' ? this.props.customComponentMappings[curr.customComponent] : curr.customComponent;
+		const currCustomComponent = typeof curr.customComponent === 'string' ? this.props.customComponentMappings[curr.customComponent] : curr.customComponent;
 		/*the leaves*/
 		if (!curr.children) {
 			const itemKey = "infinity-menu-leaf-" + curr.id;
@@ -311,7 +311,7 @@ InfinityMenu.propTypes = {
 	tree: React.PropTypes.array,
 	headerContent: React.PropTypes.any,
 	headerProps: React.PropTypes.object,
-  customComponentMappings: React.PropTypes.object,
+	customComponentMappings: React.PropTypes.object,
 	emptyTreeComponent: React.PropTypes.any,
 	emptyTreeComponentProps: React.PropTypes.object,
 	filter: React.PropTypes.func,
