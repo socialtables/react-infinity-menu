@@ -115,6 +115,9 @@ Here is the example data you could pass into the tree props.
 ];
 ```
 
+#### disableDefaultHeaderContent (boolean)
+A boolean to set if user want to display the default header search input. If user pass in headerContent, the default header will be disabled.
+
 #### headerContent(React Component)
 Subcomponent rendered above the tree.
 

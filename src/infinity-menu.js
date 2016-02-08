@@ -1,6 +1,8 @@
 import React from "react";
+import SearchInput from "./search-input";
 import NestedObjects from "nested-objects";
 import dcopy from "deep-copy";
+
 /*
  *  @class InfinityMenu
  */
@@ -293,7 +295,8 @@ export default class InfinityMenu extends React.Component {
 		};
 
 		const bodyContent = this.renderBody(displayTree);
-		const headerContent = this.props.headerContent ? React.createElement(this.props.headerContent, headerProps) : null;
+		const defaultHeaderContent = this.props.disableDefaultHeaderContent ? null : React.createElement(SearchInput, headerProps);
+		const headerContent = this.props.headerContent ? React.createElement(this.props.headerContent, headerProps) : defaultHeaderContent;
 
 		return (
 			<div className="infinity-menu-container">
@@ -309,6 +312,7 @@ export default class InfinityMenu extends React.Component {
 InfinityMenu.propTypes = {
 	tree: React.PropTypes.array,
 	headerContent: React.PropTypes.any,
+	disableDefaultHeaderContent: React.PropTypes.boolean,
 	headerProps: React.PropTypes.object,
 	emptyTreeComponent: React.PropTypes.any,
 	emptyTreeComponentProps: React.PropTypes.object,
@@ -322,6 +326,7 @@ InfinityMenu.propTypes = {
 InfinityMenu.defaultProps = {
 	tree: [],
 	headerContent: null,
+	disableDefaultHeaderContent: false,
 	headerProps: {},
 	emptyTreeComponent: null,
 	emptyTreeComponentProps: {},
