@@ -115,6 +115,9 @@ Here is the example data you could pass into the tree props.
 ];
 ```
 
+#### disableDefaultHeaderContent (boolean)
+A boolean to set if user want to display the default header search input. If user pass in headerContent, the default header will be disabled.
+
 #### headerContent(React Component)
 Subcomponent rendered above the tree.
 
@@ -217,7 +220,7 @@ There is a default style sheet you can use if you so desire.
 
 # License
 
-Copyright (C) 2015 Social Tables, Inc. (https://www.socialtables.com) All rights reserved.
+Copyright (C) 2016 Social Tables, Inc. (https://www.socialtables.com) All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
