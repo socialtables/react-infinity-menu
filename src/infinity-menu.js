@@ -135,6 +135,7 @@ export default class InfinityMenu extends React.Component {
 	 */
 	setDisplayTree(tree, prevs, curr, keyPath) {
 		const currLevel = Math.floor(keyPath.length / 2);
+		const currCustomComponent = typeof curr.customComponent === 'string' ? this.props.customComponentMappings[curr.customComponent] : curr.customComponent;
 		/*the leaves*/
 		if (!curr.children) {
 			const itemKey = "infinity-menu-leaf-" + curr.id;
@@ -149,7 +150,7 @@ export default class InfinityMenu extends React.Component {
 					icon: curr.icon,
 					data: curr
 				};
-				prevs.push(React.createElement(curr.customComponent, componentProps));
+				prevs.push(React.createElement(currCustomComponent, componentProps));
 			}
 			else {
 				prevs.push(
@@ -179,7 +180,7 @@ export default class InfinityMenu extends React.Component {
 						data: curr,
 						key
 					};
-					prevs.push(React.createElement(curr.customComponent, nodeProps));
+					prevs.push(React.createElement(currCustomComponent, nodeProps));
 				}
 				else {
 					prevs.push(
@@ -206,7 +207,7 @@ export default class InfinityMenu extends React.Component {
 						key,
 						isSearching
 					};
-					openedNode.push(React.createElement(curr.customComponent, nodeProps));
+					openedNode.push(React.createElement(currCustomComponent, nodeProps));
 				}
 				else {
 					openedNode.push(
@@ -314,6 +315,7 @@ InfinityMenu.propTypes = {
 	headerContent: React.PropTypes.any,
 	disableDefaultHeaderContent: React.PropTypes.boolean,
 	headerProps: React.PropTypes.object,
+	customComponentMappings: React.PropTypes.object,
 	emptyTreeComponent: React.PropTypes.any,
 	emptyTreeComponentProps: React.PropTypes.object,
 	filter: React.PropTypes.func,
