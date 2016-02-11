@@ -135,6 +135,16 @@ Passing the following into InfinityMenu as the `headerProps` prop sets the `titl
 }
 ```
 
+
+#### customComponentMappings (object)
+A mapping that let user to pass in customComponent as string.
+```js
+var myComponentMappings = {
+    "MyComponent1": MyComponent1,
+    "MyComponent2": MyComponent2
+}
+```
+
 #### customComponent(React Component)
 A custom React component the user can pass in.
   * As the `customComponent` at the node level, you will receive props `key`,  `onClick`, `name`, `isOpen`, `data` and `isSearching`.
