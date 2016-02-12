@@ -313,7 +313,7 @@ export default class InfinityMenu extends React.Component {
 InfinityMenu.propTypes = {
 	tree: React.PropTypes.array,
 	headerContent: React.PropTypes.any,
-	disableDefaultHeaderContent: React.PropTypes.boolean,
+	disableDefaultHeaderContent: React.PropTypes.bool,
 	headerProps: React.PropTypes.object,
 	customComponentMappings: React.PropTypes.object,
 	emptyTreeComponent: React.PropTypes.any,
