@@ -20,7 +20,6 @@
   },
   "homepage": "https://github.com/socialtables/react-infinity-menu",
   "dependencies": {
-    "deep-copy": "^1.1.0",
     "nested-objects": "0.0.2"
   },
   "devDependencies": {
