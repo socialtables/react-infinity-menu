@@ -48,11 +48,7 @@ export default class InfinityMenu extends React.Component {
 	 *	@returns {boolean} true if something changed based on user interaction
 	 */
 	shouldComponentUpdate(nextProps, nextState) {
-		if (this.props.tree !== nextProps.tree) {
-			return true;
-		}
-
-		 if (this.state.search.isSearching
+		if (this.state.search.isSearching
 			 && nextState.search.searchInput
 			 && this.state.search.searchInput === nextState.search.searchInput) {
 			return false;
