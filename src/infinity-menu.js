@@ -92,7 +92,7 @@ export default class InfinityMenu extends React.Component {
 		});
 	}
 
-	findFilted(trees, node, key) {
+	findFiltered(trees, node, key) {
 		if (!node.children) {
 			const nodeMatchesSearchFilter = this.props.filter(node, this.state.search.searchInput);
 			if (nodeMatchesSearchFilter) {
@@ -108,16 +108,9 @@ export default class InfinityMenu extends React.Component {
 		}
 		else {
 			const filteredSubFolder = node.children.length ? node.children.reduce((p, c, k) => {
-				return this.findFilted(p, c, k);
+				return this.findFiltered(p, c, k);
 			}, []) : [];
-			const shouldDisplay = filteredSubFolder.reduce((prev, child) => {
-				if (child.isSearchDisplay) {
-					return true;
-				}
-				else {
-					return prev;
-				}
-			}, false);
+			const shouldDisplay = filteredSubFolder.some(child => child.isSearchDisplay);
 
 			if (shouldDisplay) {
 				node.isSearchOpen = true;
@@ -290,7 +283,7 @@ export default class InfinityMenu extends React.Component {
 			if (key === undefined) {
 				return prev;
 			}
-			return this.findFilted(prev, curr, key);
+			return this.findFiltered(prev, curr, key);
 		}, []) : tree;
 
 
