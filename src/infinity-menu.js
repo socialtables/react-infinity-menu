@@ -114,7 +114,16 @@ export default class InfinityMenu extends React.Component {
 			const filteredSubFolder = node.children.length ? node.children.reduce((p, c, k) => {
 				return this.findFilted(p, c, k);
 			}, []) : [];
-			if (filteredSubFolder.length !== 0) {
+			const shouldDisplay = filteredSubFolder.reduce((prev, child) => {
+				if (child.isSearchDisplay) {
+					return true;
+				}
+				else {
+					return prev;
+				}
+			}, false);
+
+			if (shouldDisplay) {
 				node.isSearchOpen = true;
 				node.children = filteredSubFolder;
 				node.isSearchDisplay = true;
