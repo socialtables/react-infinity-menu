@@ -1,7 +1,6 @@
 import React from "react";
 import SearchInput from "./search-input";
 import NestedObjects from "nested-objects";
-import dcopy from "deep-copy";
 
 /*
  *  @class InfinityMenu
@@ -49,13 +48,9 @@ export default class InfinityMenu extends React.Component {
 	 *	@returns {boolean} true if something changed based on user interaction
 	 */
 	shouldComponentUpdate(nextProps, nextState) {
-		if (this.props.tree !== nextProps.tree) {
-			return true;
-		}
-
-		if (this.state.search.isSearching &&
-			this.state.search.isSearching === nextState.search.isSearching &&
-			this.state.search.searchInput === nextState.search.searchInput) {
+		if (this.state.search.isSearching
+			 && nextState.search.searchInput
+			 && this.state.search.searchInput === nextState.search.searchInput) {
 			return false;
 		}
 		return true;
@@ -97,28 +92,37 @@ export default class InfinityMenu extends React.Component {
 		});
 	}
 
-	findFilted(trees, node, key) {
+	findFiltered(trees, node, key) {
 		if (!node.children) {
 			const nodeMatchesSearchFilter = this.props.filter(node, this.state.search.searchInput);
 			if (nodeMatchesSearchFilter) {
+				node.isSearchDisplay = true;
 				trees[key] = node;
 				return trees;
 			}
 			else {
+				node.isSearchDisplay = false;
+				trees[key] = node;
 				return trees;
 			}
 		}
 		else {
 			const filteredSubFolder = node.children.length ? node.children.reduce((p, c, k) => {
-				return this.findFilted(p, c, k);
+				return this.findFiltered(p, c, k);
 			}, []) : [];
-			if (filteredSubFolder.length !== 0) {
-				node.isOpen = true;
+			const shouldDisplay = filteredSubFolder.some(child => child.isSearchDisplay);
+
+			if (shouldDisplay) {
+				node.isSearchOpen = true;
 				node.children = filteredSubFolder;
+				node.isSearchDisplay = true;
 				trees[key] = node;
 				return trees;
 			}
 			else {
+				node.isSearchOpen = false;
+				node.isSearchDisplay = false;
+				trees[key] = node;
 				return trees;
 			}
 		}
@@ -136,33 +140,37 @@ export default class InfinityMenu extends React.Component {
 	setDisplayTree(tree, prevs, curr, keyPath) {
 		const currLevel = Math.floor(keyPath.length / 2);
 		const currCustomComponent = typeof curr.customComponent === 'string' ? this.props.customComponentMappings[curr.customComponent] : curr.customComponent;
+		const isSearching = this.state.search.isSearching && this.state.search.searchInput;
+		const shouldDisplay = (isSearching && curr.isSearchDisplay) || !isSearching;
 		/*the leaves*/
 		if (!curr.children) {
 			const itemKey = "infinity-menu-leaf-" + curr.id;
 			curr.keyPath = keyPath;
-			if (curr.customComponent) {
-				const componentProps = {
-					key: itemKey,
-					onMouseDown: this.props.onLeafMouseDown,
-					onMouseUp: this.props.onLeafMouseUp,
-					onClick: this.props.onLeafMouseClick,
-					name: curr.name,
-					icon: curr.icon,
-					data: curr
-				};
-				prevs.push(React.createElement(currCustomComponent, componentProps));
-			}
-			else {
-				prevs.push(
-					<li key={itemKey}
-						className="infinity-menu-leaf-container"
-						onMouseDown={(e) => this.props.onLeafMouseDown ? this.props.onLeafMouseDown(e, curr) : null}
-						onMouseUp={(e) => this.props.onLeafMouseUp ? this.props.onLeafMouseUp(e, curr) : null}
-						onClick={(e) => this.props.onLeafMouseClick ? this.props.onLeafMouseClick(e, curr) : null}
-						>
-						<span>{curr.name}</span>
-					</li>
-				);
+			if (shouldDisplay) {
+				if (curr.customComponent) {
+					const componentProps = {
+						key: itemKey,
+						onMouseDown: this.props.onLeafMouseDown,
+						onMouseUp: this.props.onLeafMouseUp,
+						onClick: this.props.onLeafMouseClick,
+						name: curr.name,
+						icon: curr.icon,
+						data: curr
+					};
+					prevs.push(React.createElement(currCustomComponent, componentProps));
+				}
+				else {
+					prevs.push(
+						<li key={itemKey}
+							className="infinity-menu-leaf-container"
+							onMouseDown={(e) => this.props.onLeafMouseDown ? this.props.onLeafMouseDown(e, curr) : null}
+							onMouseUp={(e) => this.props.onLeafMouseUp ? this.props.onLeafMouseUp(e, curr) : null}
+							onClick={(e) => this.props.onLeafMouseClick ? this.props.onLeafMouseClick(e, curr) : null}
+							>
+							<span>{curr.name}</span>
+						</li>
+					);
+				}
 			}
 			return prevs;
 		}
@@ -170,72 +178,74 @@ export default class InfinityMenu extends React.Component {
 		else {
 			const key = "infinity-menu-node-" + currLevel + "-" + curr.id;
 			const nodeName = curr.name;
-			if (!curr.isOpen) {
-				if (curr.customComponent) {
-					const nodeProps = {
-						onClick: this.onNodeClick.bind(this, tree, curr, keyPath),
-						name: nodeName,
-						isOpen: curr.isOpen,
-						isSearching: false,
-						data: curr,
-						key
-					};
-					prevs.push(React.createElement(currCustomComponent, nodeProps));
-				}
-				else {
-					prevs.push(
-						<div key={key}
-							onClick={this.onNodeClick.bind(this, tree, curr, keyPath)}
-							className="infinity-menu-node-container"
-						>
-							<label>{nodeName}</label>
-						</div>
-					);
+			if ((!curr.isOpen && !isSearching) || (!curr.isSearchOpen && isSearching)) {
+				if (shouldDisplay) {
+					if (curr.customComponent) {
+						const nodeProps = {
+							onClick: this.onNodeClick.bind(this, tree, curr, keyPath),
+							name: nodeName,
+							isOpen: curr.isOpen,
+							isSearching: false,
+							data: curr,
+							key
+						};
+						prevs.push(React.createElement(currCustomComponent, nodeProps));
+					}
+					else {
+						prevs.push(
+							<div key={key}
+								onClick={this.onNodeClick.bind(this, tree, curr, keyPath)}
+								className="infinity-menu-node-container"
+							>
+								<label>{nodeName}</label>
+							</div>
+						);
+					}
 				}
 				return prevs;
 			}
 			else {
 				let openedNode = [];
-				const isSearching = this.state.search.isSearching && this.state.search.searchInput;
-
-				if (curr.customComponent) {
-					const nodeProps = {
-						onClick: this.onNodeClick.bind(this, tree, curr, keyPath),
-						name: nodeName,
-						isOpen: curr.isOpen,
-						data: curr,
-						key,
-						isSearching
-					};
-					openedNode.push(React.createElement(currCustomComponent, nodeProps));
-				}
-				else {
-					openedNode.push(
-						<div key={key}
-							onClick={this.onNodeClick.bind(this, tree, curr, keyPath)}
-							className="infinity-menu-node-container"
-						>
-							<label>{nodeName}</label>
-						</div>
-					);
-				}
-
-				const childrenList = curr.children.length ? curr.children.reduce((p, c, k) => {
-					if (c === undefined || k === undefined) {
-						return p;
+				if (shouldDisplay) {
+					if (curr.customComponent) {
+						const nodeProps = {
+							onClick: this.onNodeClick.bind(this, tree, curr, keyPath),
+							name: nodeName,
+							isOpen: curr.isOpen,
+							data: curr,
+							key,
+							isSearching
+						};
+						openedNode.push(React.createElement(currCustomComponent, nodeProps));
 					}
-					return this.setDisplayTree(tree, p, c, keyPath + ".children." + k);
-				}, []) : [];
+					else {
+						openedNode.push(
+							<div key={key}
+								onClick={this.onNodeClick.bind(this, tree, curr, keyPath)}
+								className="infinity-menu-node-container"
+							>
+								<label>{nodeName}</label>
+							</div>
+						);
+					}
+
+					const childrenList = curr.children.length ? curr.children.reduce((p, c, k) => {
+						if (c === undefined || k === undefined) {
+							return p;
+						}
+						return this.setDisplayTree(tree, p, c, keyPath + ".children." + k);
+					}, []) : [];
 
 
-				if (childrenList.length > 0) {
-					openedNode.push(
-						<ul key={"infinity-menu-children-list" + currLevel}>
-							{childrenList}
-						</ul>
-					);
+					if (childrenList.length > 0) {
+						openedNode.push(
+							<ul key={"infinity-menu-children-list" + currLevel}>
+								{childrenList}
+							</ul>
+						);
+					}
+					prevs.push(openedNode);
 				}
-				prevs.push(openedNode);
 				return prevs;
 			}
 		}
@@ -266,14 +276,14 @@ export default class InfinityMenu extends React.Component {
 	 *  @description React render method for creating infinity menu
 	 */
 	render() {
-		const tree = dcopy(this.props.tree);
+		const tree = this.props.tree;
 
 		/*find filtered folders base on search, if there no search, return all*/
 		const filteredTree = this.state.search.isSearching && this.state.search.searchInput ? tree.reduce((prev, curr, key) => {
 			if (key === undefined) {
 				return prev;
 			}
-			return this.findFilted(prev, curr, key);
+			return this.findFiltered(prev, curr, key);
 		}, []) : tree;
 
 
