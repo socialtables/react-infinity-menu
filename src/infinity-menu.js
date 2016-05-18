@@ -39,23 +39,6 @@ export default class InfinityMenu extends React.Component {
 		}
 	}
 	/*
-	 *	@function shouldComponentUpdate
-	 *	@description check for edge cases with filtering that can cause loops
-	 *
-	 *	@param {object} nextProps - next props to be fed into this component
-	 *	@param {object} nextState - next state based on user interactions
-	 *
-	 *	@returns {boolean} true if something changed based on user interaction
-	 */
-	shouldComponentUpdate(nextProps, nextState) {
-		if (this.state.search.isSearching
-			 && nextState.search.searchInput
-			 && this.state.search.searchInput === nextState.search.searchInput) {
-			return false;
-		}
-		return true;
-	}
-	/*
 	 *	@function startSearching
 	 *	@description when not searching and search icon clicked, set state to start
 	 */
@@ -277,7 +260,6 @@ export default class InfinityMenu extends React.Component {
 	 */
 	render() {
 		const tree = this.props.tree;
-
 		/*find filtered folders base on search, if there no search, return all*/
 		const filteredTree = this.state.search.isSearching && this.state.search.searchInput ? tree.reduce((prev, curr, key) => {
 			if (key === undefined) {
