@@ -39,6 +39,18 @@ export default class InfinityMenu extends React.Component {
 		}
 	}
 	/*
+	* @function shouldComponentUpdate
+	* @returns {boolean} return based on user pass in shouldComponentUpdate or return true
+	*/
+	shouldComponentUpdate(nextProps, nextState) {
+		if (nextProps.shouldComponentUpdate) {
+			return nextProps.shouldComponentUpdate(this.props, this.state, nextProps, nextState);
+		}
+		else {
+			return true;
+		}
+	}
+	/*
 	 *	@function startSearching
 	 *	@description when not searching and search icon clicked, set state to start
 	 */
@@ -315,7 +327,8 @@ InfinityMenu.propTypes = {
 	onNodeMouseClick: React.PropTypes.func,
 	onLeafMouseClick: React.PropTypes.func,
 	onLeafMouseDown: React.PropTypes.func,
-	onLeafMouseUp: React.PropTypes.func
+	onLeafMouseUp: React.PropTypes.func,
+	shouldComponentUpdate: React.PropTypes.func
 };
 
 InfinityMenu.defaultProps = {
