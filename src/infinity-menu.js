@@ -39,21 +39,16 @@ export default class InfinityMenu extends React.Component {
 		}
 	}
 	/*
-	 *	@function shouldComponentUpdate
-	 *	@description check for edge cases with filtering that can cause loops
-	 *
-	 *	@param {object} nextProps - next props to be fed into this component
-	 *	@param {object} nextState - next state based on user interactions
-	 *
-	 *	@returns {boolean} true if something changed based on user interaction
-	 */
+	* @function shouldComponentUpdate
+	* @returns {boolean} return based on user pass in shouldComponentUpdate or return true
+	*/
 	shouldComponentUpdate(nextProps, nextState) {
-		if (this.state.search.isSearching
-			 && nextState.search.searchInput
-			 && this.state.search.searchInput === nextState.search.searchInput) {
-			return false;
+		if (nextProps.shouldComponentUpdate) {
+			return nextProps.shouldComponentUpdate(this.props, this.state, nextProps, nextState);
 		}
-		return true;
+		else {
+			return true;
+		}
 	}
 	/*
 	 *	@function startSearching
@@ -332,7 +327,8 @@ InfinityMenu.propTypes = {
 	onNodeMouseClick: React.PropTypes.func,
 	onLeafMouseClick: React.PropTypes.func,
 	onLeafMouseDown: React.PropTypes.func,
-	onLeafMouseUp: React.PropTypes.func
+	onLeafMouseUp: React.PropTypes.func,
+	shouldComponentUpdate: React.PropTypes.func
 };
 
 InfinityMenu.defaultProps = {

@@ -222,6 +222,9 @@ The function arguments include ```event```, ```leaf```.
 * ```event``` is the click event.
 * ```leaf``` is the item user clicked on. Includes name, id, keyPath and all data the user inputs when they pass in the tree.
 
+#### shouldComponentUpdate(function) [currProps, currState, nextProps, nextState]
+A function that will be called inside shouldComponentUpdate. It's a good place to optimize update.
+
 
 
 # Styles
