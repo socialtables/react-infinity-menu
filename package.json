@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/socialtables/react-infinity-menu",
   "dependencies": {
-    "nested-objects": "0.0.2"
+    "lodash": "^4.16.2"
   },
   "devDependencies": {
     "babel": "^5.8.23",

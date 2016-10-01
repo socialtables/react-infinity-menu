@@ -28,6 +28,30 @@ class App extends React.Component {
 							{
 								name: "Sub-SubMenu1-3",
 								id: 2
+							},
+							{
+								name: "Sub-SubMenu1-4",
+								id: 3
+							},
+							{
+								name: "Sub-SubMenu1-5",
+								id: 4
+							},
+							{
+								name: "Sub-SubMenu1-6",
+								id: 5
+							},
+							{
+								name: "Sub-SubMenu1-7",
+								id: 6
+							},
+							{
+								name: "Sub-SubMenu1-8",
+								id: 7
+							},
+							{
+								name: "Sub-SubMenu1-9",
+								id: 8
 							}
 						]
 					},
@@ -94,6 +118,7 @@ class App extends React.Component {
 			<InfinityMenu
 				tree={this.state.tree}
 				onNodeMouseClick={this.onNodeMouseClick.bind(this)}
+				maxLeaves={2}
 			/>
 		);
 	}

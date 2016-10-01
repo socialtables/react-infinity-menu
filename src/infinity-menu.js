@@ -1,6 +1,7 @@
 import React from "react";
 import SearchInput from "./search-input";
-import NestedObjects from "nested-objects";
+import _ from 'lodash'
+// import NestedObjects from "nested-objects";
 
 /*
  *  @class InfinityMenu
@@ -31,7 +32,23 @@ export default class InfinityMenu extends React.Component {
 		event.preventDefault();
 		if (!this.state.search.isSearching || !this.state.search.searchInput.length) {
 			node.isOpen = !node.isOpen;
-			NestedObjects.set(tree, keyPath, node);
+			if (!node.isOpen || node.children && !node.maxLeaves) {
+				node.maxLeaves = this.props.maxLeaves;
+			}
+			if (this.props.onNodeMouseClick) {
+				const currLevel = Math.floor(keyPath.split(".").length / 2);
+				this.props.onNodeMouseClick(event, tree, node, currLevel, keyPath);
+			}
+		}
+	}
+
+	onLoadMoreClick(tree, node, keyPath, event) {
+		event.preventDefault();
+		const keyPathArray = keyPath.split('.')
+		const parentPath = Object.assign([],keyPathArray).splice(0, keyPathArray.length - 2)
+		const parentNode = _.get(this.props.tree, parentPath)
+		if (parentNode) {
+			parentNode.maxLeaves = (!parentNode.maxLeaves) ? this.props.maxLeaves : parentNode.maxLeaves + this.props.maxLeaves;
 			if (this.props.onNodeMouseClick) {
 				const currLevel = Math.floor(keyPath.split(".").length / 2);
 				this.props.onNodeMouseClick(event, tree, node, currLevel, keyPath);
@@ -111,6 +128,7 @@ export default class InfinityMenu extends React.Component {
 				node.isSearchOpen = true;
 				node.children = filteredSubFolder;
 				node.isSearchDisplay = true;
+				node.maxLeaves = (node.maxLeaves) ? node.maxLeaves : this.props.maxLeaves;
 				trees[key] = node;
 				return trees;
 			}
@@ -138,10 +156,22 @@ export default class InfinityMenu extends React.Component {
 		const isSearching = this.state.search.isSearching && this.state.search.searchInput;
 		const shouldDisplay = (isSearching && curr.isSearchDisplay) || !isSearching;
 		/*the leaves*/
+
 		if (!curr.children) {
+			const keyPathArray = keyPath.split('.')
+			const parentPath = Object.assign([],keyPathArray).splice(0, keyPathArray.length - 2)
+			const parentNode = _.get(this.props.tree, parentPath)
+			const filteredChildren = (_.some(parentNode.children,{isSearchDisplay: true})) ? _.filter(parentNode.children,{isSearchDisplay: true}) : parentNode.children
+
 			const itemKey = "infinity-menu-leaf-" + curr.id;
+
+			const visIds = filteredChildren.map((e) => e.id)
 			curr.keyPath = keyPath;
-			if (shouldDisplay) {
+
+			let relativeIndex = visIds.indexOf(curr.id)
+			relativeIndex = (relativeIndex === -1) ? Infinity : relativeIndex
+
+			if (shouldDisplay && parentNode.maxLeaves > relativeIndex ) {
 				if (curr.customComponent) {
 					const componentProps = {
 						key: itemKey,
@@ -165,6 +195,29 @@ export default class InfinityMenu extends React.Component {
 							<span>{curr.name}</span>
 						</li>
 					);
+				}
+			} else {
+				if (relativeIndex === filteredChildren.length - 1) {
+					if (this.props.loadMoreComponent) {
+							prevs.push(
+							<div key={itemKey}
+								onClick={this.onLoadMoreClick.bind(this, tree, curr, keyPath)}
+							>
+								{
+									this.props.loadMoreComponent//not really a component yet...
+								}
+							</div>
+						)
+					} else {
+						prevs.push(
+							<li key={itemKey}
+								className="infinity-menu-load-more-container"
+								onClick={this.onLoadMoreClick.bind(this, tree, curr, keyPath)}
+							>
+								<span>Load more</span>
+							</li>
+						);
+					}
 				}
 			}
 			return prevs;
@@ -272,7 +325,6 @@ export default class InfinityMenu extends React.Component {
 	 */
 	render() {
 		const tree = this.props.tree;
-
 		/*find filtered folders base on search, if there no search, return all*/
 		const filteredTree = this.state.search.isSearching && this.state.search.searchInput ? tree.reduce((prev, curr, key) => {
 			if (key === undefined) {

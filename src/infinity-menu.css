@@ -25,3 +25,19 @@
 .infinity-menu-leaf-container:hover {
 	background-color: rgb(73, 73, 73);
 }
+
+.infinity-menu-load-more-container {
+	width: 100%;
+	background-color: rgb(255, 255, 255);
+	color: rgb(94, 96, 99);
+	height: 30px;
+	padding-left: 20px;
+	padding-top: 15px;
+	border-bottom: solid 1px rgb(73, 73 ,73);
+	text-align: center;
+	list-style-type: none;
+}
+
+.infinity-menu-load-more-container:hover {
+	background-color: rgb(200, 200, 200);
+}
