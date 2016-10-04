@@ -170,8 +170,9 @@ export default class InfinityMenu extends React.Component {
 
 			let relativeIndex = visIds.indexOf(curr.id)
 			relativeIndex = (relativeIndex === -1) ? Infinity : relativeIndex
-
-			if (shouldDisplay && parentNode.maxLeaves > relativeIndex ) {
+			// console.log(relativeIndex, visIds, parentNode.maxLeaves)
+			let parentMaxLeaves = parentNode.maxLeaves || this.props.maxLeaves
+			if (shouldDisplay && parentMaxLeaves > relativeIndex ) {
 				if (curr.customComponent) {
 					const componentProps = {
 						key: itemKey,
@@ -380,7 +381,8 @@ InfinityMenu.propTypes = {
 	onLeafMouseClick: React.PropTypes.func,
 	onLeafMouseDown: React.PropTypes.func,
 	onLeafMouseUp: React.PropTypes.func,
-	shouldComponentUpdate: React.PropTypes.func
+	shouldComponentUpdate: React.PropTypes.func,
+	maxLeaves: React.PropTypes.number
 };
 
 InfinityMenu.defaultProps = {
@@ -394,5 +396,6 @@ InfinityMenu.defaultProps = {
 	onNodeMouseClick: ()=>{},
 	onLeafMouseClick: ()=>{},
 	onLeafMouseDown: ()=>{},
-	onLeafMouseUp: ()=>{}
+	onLeafMouseUp: ()=>{},
+	maxLeaves: Infinity
 };
