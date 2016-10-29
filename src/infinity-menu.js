@@ -33,9 +33,7 @@ export default class InfinityMenu extends React.Component {
 		event.preventDefault();
 		if (!this.state.search.isSearching || !this.state.search.searchInput.length) {
 			node.isOpen = !node.isOpen;
-			if (!node.isOpen || node.children && !node.maxLeaves) {
-				node.maxLeaves = this.props.maxLeaves;
-			}
+			node.maxLeaves = this.props.maxLeaves;
 			NestedObjects.set(tree, keyPath, node);
 			if (this.props.onNodeMouseClick) {
 				const currLevel = Math.floor(keyPath.split(".").length / 2);
@@ -46,15 +44,15 @@ export default class InfinityMenu extends React.Component {
 
 	onLoadMoreClick(tree, node, keyPath, event) {
 		event.preventDefault();
+		// get parent node so we can increment it's unique max leaves property
 		const keyPathArray = keyPath.split('.')
 		const parentPath = Object.assign([],keyPathArray).splice(0, keyPathArray.length - 2)
 		const parentNode = _.get(this.props.tree, parentPath)
-		if (parentNode) {
-			parentNode.maxLeaves = (!parentNode.maxLeaves) ? this.props.maxLeaves : parentNode.maxLeaves + this.props.maxLeaves;
-			if (this.props.onNodeMouseClick) {
-				const currLevel = Math.floor(keyPath.split(".").length / 2);
-				this.props.onNodeMouseClick(event, tree, node, currLevel, keyPath);
-			}
+		// set new max leaves - if none exist use component default property
+		parentNode.maxLeaves = (!parentNode.maxLeaves) ? this.props.maxLeaves : parentNode.maxLeaves + this.props.maxLeaves;
+		if (this.props.onNodeMouseClick) {
+			const currLevel = Math.floor(keyPath.split(".").length / 2);
+			this.props.onNodeMouseClick(event, tree, node, currLevel, keyPath);
 		}
 	}
 	/*
@@ -172,7 +170,7 @@ export default class InfinityMenu extends React.Component {
 
 			let relativeIndex = visIds.indexOf(curr.id)
 			relativeIndex = (relativeIndex === -1) ? Infinity : relativeIndex
-			// console.log(relativeIndex, visIds, parentNode.maxLeaves)
+
 			let parentMaxLeaves = parentNode.maxLeaves || this.props.maxLeaves
 			if (shouldDisplay && parentMaxLeaves > relativeIndex ) {
 				if (curr.customComponent) {
