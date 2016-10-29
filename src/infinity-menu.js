@@ -1,5 +1,6 @@
 import React from "react";
 import SearchInput from "./search-input";
+import NestedObjects from "nested-objects";
 import _ from 'lodash'
 // import NestedObjects from "nested-objects";
 
@@ -35,6 +36,7 @@ export default class InfinityMenu extends React.Component {
 			if (!node.isOpen || node.children && !node.maxLeaves) {
 				node.maxLeaves = this.props.maxLeaves;
 			}
+			NestedObjects.set(tree, keyPath, node);
 			if (this.props.onNodeMouseClick) {
 				const currLevel = Math.floor(keyPath.split(".").length / 2);
 				this.props.onNodeMouseClick(event, tree, node, currLevel, keyPath);
