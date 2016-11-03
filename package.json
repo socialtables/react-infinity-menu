@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/socialtables/react-infinity-menu",
   "dependencies": {
-    "lodash": "^4.16.2",
+    "lodash": "^4.16.6",
     "nested-objects": "0.0.2"
   },
   "devDependencies": {
@@ -41,9 +41,9 @@
     "react-dom": "^0.14.3",
     "should": "^7.1.0",
     "should-sinon": "0.0.3",
-    "sinon": "^1.17.1",
-    "style-loader": "^0.13.0",
-    "webpack": "^1.12.2"
+    "sinon": "^1.17.6",
+    "style-loader": "^0.13.1",
+    "webpack": "^1.13.3"
   },
   "peerDependencies": {
     "react": ">=0.13.2"
