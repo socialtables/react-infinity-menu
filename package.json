@@ -4,7 +4,7 @@
   "description": "An unlimited deep side menu",
   "main": "./dist/infinity-menu.js",
   "scripts": {
-    "test": "mocha --compilers js:babel/register --recursive",
+    "test": "mocha --compilers js:babel-core/register --recursive",
     "build": "babel src -d dist",
     "watch": "babel src --watch -d dist",
     "dev": "webpack --watch",
