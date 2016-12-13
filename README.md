@@ -48,6 +48,7 @@ class Example extends React.Component {
 				onLeafMouseClick={this.onLeafMouseClick}/*optional*/
 				onLeafMouseDown={this.onLeafMouseDown}/*optional*/
 				onLeafMouseUp={this.onLeafMouseUp}/*optional*/
+				maxLeaves={5}/*optional*/
 			/>
 		);
 	}
@@ -221,6 +222,12 @@ This function will get call when user mouse up on the item(leaf).
 The function arguments include ```event```, ```leaf```.
 * ```event``` is the click event.
 * ```leaf``` is the item user clicked on. Includes name, id, keyPath and all data the user inputs when they pass in the tree.
+
+
+
+#### maxLeaves(integer)
+Sets the maximum number of leaf to show initially.  Also used as an increment when then load more is pressed.
+
 
 #### shouldComponentUpdate(function) [currProps, currState, nextProps, nextState]
 A function that will be called inside shouldComponentUpdate. It's a good place to optimize update.
