@@ -155,18 +155,17 @@ export default class InfinityMenu extends React.Component {
 		const currCustomloadMoreComponent = (this.props.loadMoreComponent) ? this.props.loadMoreComponent : null
 		const isSearching = this.state.search.isSearching && this.state.search.searchInput;
 		const shouldDisplay = (isSearching && curr.isSearchDisplay) || !isSearching;
-		/*the leaves*/
+		curr.keyPath = keyPath;
 
+		/*the leaves*/
 		if (!curr.children) {
 			const keyPathArray = keyPath.split('.')
 			const parentPath = Object.assign([],keyPathArray).splice(0, keyPathArray.length - 2)
 			const parentNode = _.get(this.props.tree, parentPath)
 			const filteredChildren = (_.some(parentNode.children,{isSearchDisplay: true})) ? _.filter(parentNode.children,{isSearchDisplay: true}) : parentNode.children
-
 			const itemKey = "infinity-menu-leaf-" + curr.id;
-
 			const visIds = filteredChildren.map((e) => e.id)
-			curr.keyPath = keyPath;
+
 
 			let relativeIndex = visIds.indexOf(curr.id)
 			relativeIndex = (relativeIndex === -1) ? Infinity : relativeIndex
@@ -176,9 +175,9 @@ export default class InfinityMenu extends React.Component {
 				if (curr.customComponent) {
 					const componentProps = {
 						key: itemKey,
-						onMouseDown: this.props.onLeafMouseDown,
-						onMouseUp: this.props.onLeafMouseUp,
-						onClick: this.props.onLeafMouseClick,
+						onMouseDown: (e) => {this.props.onLeafMouseDown ? this.props.onLeafMouseDown(e, curr) : null},
+						onMouseUp: (e) => {this.props.onLeafMouseUp ? this.props.onLeafMouseUp(e, curr) : null},
+						onClick: (e) => {this.props.onLeafMouseClick ? this.props.onLeafMouseClick(e, curr) : null},
 						name: curr.name,
 						icon: curr.icon,
 						data: curr
