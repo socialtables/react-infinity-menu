@@ -1,7 +1,7 @@
 import React from "react";
 import SearchInput from "./search-input";
 import NestedObjects from "nested-objects";
-import _ from 'lodash'
+import _get from 'lodash/get'
 
 /*
  *  @class InfinityMenu
@@ -46,7 +46,7 @@ export default class InfinityMenu extends React.Component {
 		// get parent node so we can increment it's unique max leaves property
 		const keyPathArray = keyPath.split('.')
 		const parentPath = Object.assign([],keyPathArray).splice(0, keyPathArray.length - 2)
-		const parentNode = _.get(this.props.tree, parentPath)
+		const parentNode = _get(this.props.tree, parentPath)
 		// set new max leaves - if none exist use component default property
 		parentNode.maxLeaves = (!parentNode.maxLeaves) ? this.props.maxLeaves : parentNode.maxLeaves + this.props.maxLeaves;
 		if (this.props.onNodeMouseClick) {
@@ -159,18 +159,23 @@ export default class InfinityMenu extends React.Component {
 
 		/*the leaves*/
 		if (!curr.children) {
-			const keyPathArray = keyPath.split('.')
-			const parentPath = Object.assign([],keyPathArray).splice(0, keyPathArray.length - 2)
-			const parentNode = _.get(this.props.tree, parentPath)
-			const filteredChildren = (_.some(parentNode.children,{isSearchDisplay: true})) ? _.filter(parentNode.children,{isSearchDisplay: true}) : parentNode.children
+			const keyPathArray = keyPath.split('.');
+			const parentPath = Object.assign([],keyPathArray).splice(0, keyPathArray.length - 2);
+			const parentNode = _get(this.props.tree, parentPath);
+			const filteredChildren = (
+				parentNode.children.some(child => child.isSearchDisplay === true)
+				?
+				parentNode.children.filter(child => child.isSearchDisplay === true)
+				:
+				parentNode.children
+			);
 			const itemKey = "infinity-menu-leaf-" + curr.id;
-			const visIds = filteredChildren.map((e) => e.id)
+			const visIds = filteredChildren.map((e) => e.id);
 
+			let relativeIndex = visIds.indexOf(curr.id);
+			relativeIndex = (relativeIndex === -1) ? Infinity : relativeIndex;
 
-			let relativeIndex = visIds.indexOf(curr.id)
-			relativeIndex = (relativeIndex === -1) ? Infinity : relativeIndex
-
-			let parentMaxLeaves = parentNode.maxLeaves || this.props.maxLeaves
+			let parentMaxLeaves = parentNode.maxLeaves || this.props.maxLeaves;
 			if (shouldDisplay && parentMaxLeaves > relativeIndex ) {
 				if (curr.customComponent) {
 					const componentProps = {
