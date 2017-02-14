@@ -1,7 +1,7 @@
 import React from "react";
 import SearchInput from "./search-input";
 import NestedObjects from "nested-objects";
-import _get from 'lodash/get'
+import _get from "lodash/get";
 
 /*
  *  @class InfinityMenu
@@ -151,8 +151,8 @@ export default class InfinityMenu extends React.Component {
 	 */
 	setDisplayTree(tree, prevs, curr, keyPath) {
 		const currLevel = Math.floor(keyPath.length / 2);
-		const currCustomComponent = typeof curr.customComponent === 'string' ? this.props.customComponentMappings[curr.customComponent] : curr.customComponent;
-		const currCustomloadMoreComponent = (this.props.loadMoreComponent) ? this.props.loadMoreComponent : null
+		const currCustomComponent = typeof curr.customComponent === "string" ? this.props.customComponentMappings[curr.customComponent] : curr.customComponent;
+		const currCustomloadMoreComponent = (this.props.loadMoreComponent) ? this.props.loadMoreComponent : null;
 		const isSearching = this.state.search.isSearching && this.state.search.searchInput;
 		const shouldDisplay = (isSearching && curr.isSearchDisplay) || !isSearching;
 		curr.keyPath = keyPath;
@@ -180,9 +180,15 @@ export default class InfinityMenu extends React.Component {
 				if (curr.customComponent) {
 					const componentProps = {
 						key: itemKey,
-						onMouseDown: (e) => {this.props.onLeafMouseDown ? this.props.onLeafMouseDown(e, curr) : null},
-						onMouseUp: (e) => {this.props.onLeafMouseUp ? this.props.onLeafMouseUp(e, curr) : null},
-						onClick: (e) => {this.props.onLeafMouseClick ? this.props.onLeafMouseClick(e, curr) : null},
+						onMouseDown: (e) => {
+							this.props.onLeafMouseDown ? this.props.onLeafMouseDown(e, curr) : null;
+						},
+						onMouseUp: (e) => {
+							this.props.onLeafMouseUp ? this.props.onLeafMouseUp(e, curr) : null;
+						},
+						onClick: (e) => {
+							this.props.onLeafMouseClick ? this.props.onLeafMouseClick(e, curr) : null;
+						},
 						name: curr.name,
 						icon: curr.icon,
 						data: curr
@@ -201,15 +207,17 @@ export default class InfinityMenu extends React.Component {
 						</li>
 					);
 				}
-			} else {
+			}
+			else {
 				if (relativeIndex === filteredChildren.length - 1) {
 					if (currCustomloadMoreComponent) {
-							const loadMoreProps = {
-								key: itemKey,
-								onClick: this.onLoadMoreClick.bind(this, tree, curr, keyPath)
-							};
-							prevs.push(React.createElement(currCustomloadMoreComponent, loadMoreProps));
-					} else {
+						const loadMoreProps = {
+							key: itemKey,
+							onClick: this.onLoadMoreClick.bind(this, tree, curr, keyPath)
+						};
+						prevs.push(React.createElement(currCustomloadMoreComponent, loadMoreProps));
+					}
+					else {
 						prevs.push(
 							<li key={itemKey}
 								className="infinity-menu-load-more-container"

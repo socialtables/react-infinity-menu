@@ -14,8 +14,7 @@ describe("Basic render test", function() {
 
 	before(function() {
 		const tree =
-		[
-			{
+			[{
 				name: "menu1",
 				id: 1,
 				isOpen: true,
@@ -58,8 +57,7 @@ describe("Basic render test", function() {
 						id: 1
 					}
 				]
-			}
-		];
+			}];
 		component = <InfinityMenu tree={tree} />;
 	});
 

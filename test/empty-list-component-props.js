@@ -25,7 +25,7 @@ describe("Empty List Component props", function() {
 			TestUtils.findRenderedDOMComponentWithClass(
 				dom,
 				"dummy-empty-tree-component"
-			)
+			);
 		});
 	});
 
