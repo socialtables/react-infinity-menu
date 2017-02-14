@@ -44,9 +44,9 @@ export default class InfinityMenu extends React.Component {
 	onLoadMoreClick(tree, node, keyPath, event) {
 		event.preventDefault();
 		// get parent node so we can increment it's unique max leaves property
-		const keyPathArray = keyPath.split('.')
-		const parentPath = Object.assign([],keyPathArray).splice(0, keyPathArray.length - 2)
-		const parentNode = _get(this.props.tree, parentPath)
+		const keyPathArray = keyPath.split(".");
+		const parentPath = Object.assign([],keyPathArray).splice(0, keyPathArray.length - 2);
+		const parentNode = _get(this.props.tree, parentPath);
 		// set new max leaves - if none exist use component default property
 		parentNode.maxLeaves = (!parentNode.maxLeaves) ? this.props.maxLeaves : parentNode.maxLeaves + this.props.maxLeaves;
 		if (this.props.onNodeMouseClick) {
@@ -159,7 +159,7 @@ export default class InfinityMenu extends React.Component {
 
 		/*the leaves*/
 		if (!curr.children) {
-			const keyPathArray = keyPath.split('.');
+			const keyPathArray = keyPath.split(".");
 			const parentPath = Object.assign([],keyPathArray).splice(0, keyPathArray.length - 2);
 			const parentNode = _get(this.props.tree, parentPath);
 			const filteredChildren = (
@@ -209,7 +209,6 @@ export default class InfinityMenu extends React.Component {
 								onClick: this.onLoadMoreClick.bind(this, tree, curr, keyPath)
 							};
 							prevs.push(React.createElement(currCustomloadMoreComponent, loadMoreProps));
-
 					} else {
 						prevs.push(
 							<li key={itemKey}
