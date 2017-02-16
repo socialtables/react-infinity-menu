@@ -55,38 +55,36 @@ describe("Custom Component prop", function() {
 	});
 
 	it("should render the custom component when given as a string with mappings", function () {
-			const tree = [
+		const tree = [{
+			name: "menu1",
+			id: 1,
+			isOpen: true,
+			customComponent: "CustomComponent",
+			children: [
 				{
-					name: "menu1",
+					name: "submenu1",
 					id: 1,
 					isOpen: true,
-					customComponent: 'CustomComponent',
 					children: [
 						{
-							name: "submenu1",
-							id: 1,
-							isOpen: true,
-							children: [
-								{
-									name: "item1-1",
-									id: 1
-								},
-								{
-									name: "item1-2",
-									id: 2
-								}
-							]
+							name: "item1-1",
+							id: 1
+						},
+						{
+							name: "item1-2",
+							id: 2
 						}
 					]
 				}
-			];
-			component = <InfinityMenu tree={tree} customComponentMappings={{ 'CustomComponent': CustomComponent }}/>;
-			dom = TestUtils.renderIntoDocument(component);
-			should.doesNotThrow(() => {
-				TestUtils.findRenderedDOMComponentWithClass(
-					dom,
-					"test-custom-component"
-				);
-			});
+			]
+		}];
+		component = <InfinityMenu tree={tree} customComponentMappings={{ "CustomComponent": CustomComponent }}/>;
+		dom = TestUtils.renderIntoDocument(component);
+		should.doesNotThrow(() => {
+			TestUtils.findRenderedDOMComponentWithClass(
+				dom,
+				"test-custom-component"
+			);
 		});
+	});
 });
