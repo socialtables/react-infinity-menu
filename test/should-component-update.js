@@ -1,10 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import TestUtils from "react-addons-test-utils";
 import InfinityMenu from "../src/infinity-menu";
 import should from "should";
 import sinon from "sinon";
 import "should-sinon";
+import TestUtils from "react-dom/test-utils";
 
 describe("shouldComponentUpdate prop", function() {
 	const shouldComponentUpdate = sinon.stub();

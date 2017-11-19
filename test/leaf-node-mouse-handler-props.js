@@ -1,10 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import TestUtils from "react-addons-test-utils";
-let shallowRenderer = TestUtils.createRenderer();
+import { createRenderer } from "react-test-renderer/shallow";
+let shallowRenderer = createRenderer();
 import InfinityMenu from "../src/infinity-menu";
 import sinon from "sinon";
 import "should-sinon";
+import TestUtils from "react-dom/test-utils";
 
 describe("Leaf/Node Mouse Handlers", function() {
 	let component;
