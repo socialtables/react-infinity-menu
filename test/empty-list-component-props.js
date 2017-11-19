@@ -1,11 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import TestUtils from "react-addons-test-utils";
 import InfinityMenu from "../src/infinity-menu";
 import sinon from "sinon";
 import should from "should";
 import "should-sinon";
-let shallowRenderer = TestUtils.createRenderer();
+import { createRenderer } from "react-test-renderer/shallow";
+let shallowRenderer = createRenderer();
+import TestUtils from "react-dom/test-utils";
 
 describe("Empty List Component props", function() {
 	it("should render `emptyTreeComponent` prop if `tree` prop is empty Array", function() {

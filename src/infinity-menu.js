@@ -1,7 +1,8 @@
+import PropTypes from "prop-types";
 import React from "react";
 import SearchInput from "./search-input";
 import NestedObjects from "nested-objects";
-import _get from "lodash/get";
+import _get from "lodash.get";
 
 /*
  *  @class InfinityMenu
@@ -377,20 +378,20 @@ export default class InfinityMenu extends React.Component {
 }
 
 InfinityMenu.propTypes = {
-	tree: React.PropTypes.array,
-	headerContent: React.PropTypes.any,
-	disableDefaultHeaderContent: React.PropTypes.bool,
-	headerProps: React.PropTypes.object,
-	customComponentMappings: React.PropTypes.object,
-	emptyTreeComponent: React.PropTypes.any,
-	emptyTreeComponentProps: React.PropTypes.object,
-	filter: React.PropTypes.func,
-	onNodeMouseClick: React.PropTypes.func,
-	onLeafMouseClick: React.PropTypes.func,
-	onLeafMouseDown: React.PropTypes.func,
-	onLeafMouseUp: React.PropTypes.func,
-	shouldComponentUpdate: React.PropTypes.func,
-	maxLeaves: React.PropTypes.number
+	tree: PropTypes.array,
+	headerContent: PropTypes.any,
+	disableDefaultHeaderContent: PropTypes.bool,
+	headerProps: PropTypes.object,
+	customComponentMappings: PropTypes.object,
+	emptyTreeComponent: PropTypes.any,
+	emptyTreeComponentProps: PropTypes.object,
+	filter: PropTypes.func,
+	onNodeMouseClick: PropTypes.func,
+	onLeafMouseClick: PropTypes.func,
+	onLeafMouseDown: PropTypes.func,
+	onLeafMouseUp: PropTypes.func,
+	shouldComponentUpdate: PropTypes.func,
+	maxLeaves: PropTypes.number
 };
 
 InfinityMenu.defaultProps = {
