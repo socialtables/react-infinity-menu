@@ -14,8 +14,40 @@ jobs:
           paths:
             - ./node_modules
 
+publish-npm:
+  docker:
+    - image: circleci/node:4
+  working_directory: ~/
+  steps:  
+    - attach_workspace:
+        at: ~/      
+    - deploy:
+        command: npm publish --tag next
+
 workflows:
   version: 2
-  build-deploy:
+  build:
     jobs:
-      - build
+      - build:
+          filters:
+            branches:
+              only: /.*/
+            tags:
+              only: /.*/
+      - hold:
+          type: approval
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
+      - publish-npm:
+          requires:
+            - hold
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
