@@ -4,7 +4,7 @@ jobs:
     docker:
       - image: circleci/node:4
     steps:
-      - checkout      
+      - checkout
       - restore_cache:
           key: build-cache-{{ checksum "package.json" }}
       - run: npm install
@@ -14,13 +14,28 @@ jobs:
           paths:
             - ./node_modules
 
+  deploy-ci:
+    executor: sre/default
+    steps:
+      - sre/call-jenkins-gateway:
+          stage: ci
+
+  deploy-sandbox:
+    steps:
+      - sre/call-jenkins-gateway:
+          stage: dev
+
+  deploy-production:
+    steps:
+      - sre/call-jenkins-gateway:
+          stage: prod
 publish-npm:
   docker:
     - image: circleci/node:4
   working_directory: ~/
-  steps:  
+  steps:
     - attach_workspace:
-        at: ~/      
+        at: ~/
     - deploy:
         command: npm publish --tag next
 
@@ -51,3 +66,12 @@ workflows:
               ignore: /.*/
             tags:
               only: /^v.*/
+  build-deploy:
+    jobs:
+      - deploy-ci:
+          context: st-global
+          requires:
+            - build
+          filters:
+            tags:
+              only: /.*/
